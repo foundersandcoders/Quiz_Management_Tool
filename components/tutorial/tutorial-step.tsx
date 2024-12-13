@@ -1,4 +1,4 @@
-import { Checkbox } from "../ui/checkbox";
+import { Checkbox } from '../ui/checkbox';
 
 export function TutorialStep({
   title,
@@ -8,7 +8,7 @@ export function TutorialStep({
   children: React.ReactNode;
 }) {
   return (
-    <li className="relative">
+    <li className='relative'>
       <Checkbox
         id={title}
         name={title}
@@ -18,7 +18,7 @@ export function TutorialStep({
         htmlFor={title}
         className={`relative text-base text-foreground peer-checked:line-through font-medium`}
       >
-        <span className="ml-8">{title}</span>
+        <span className='ml-8'>{title}</span>
         <div
           className={`ml-8 text-sm peer-checked:line-through font-normal text-muted-foreground`}
         >

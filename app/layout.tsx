@@ -1,7 +1,7 @@
-import DeployButton from '@/components/deploy-button';
-import { EnvVarWarning } from '@/components/env-var-warning';
-import HeaderAuth from '@/components/header-auth';
-import { ThemeSwitcher } from '@/components/theme-switcher';
+import DeployButton from '@/components/preGenerated/deploy-button';
+import { EnvVarWarning } from '@/components/preGenerated/env-var-warning';
+import HeaderAuth from '@/components/preGenerated/header-auth';
+import { ThemeSwitcher } from '@/components/preGenerated/theme-switcher';
 import { hasEnvVars } from '@/utils/supabase/check-env-vars';
 import { GeistSans } from 'geist/font/sans';
 import { ThemeProvider } from 'next-themes';

@@ -1,5 +1,4 @@
 import { createClient } from '@/utils/supabase/server';
-import { data } from 'autoprefixer';
 
 const Quizzes = async () => {
   const supabase = await createClient();

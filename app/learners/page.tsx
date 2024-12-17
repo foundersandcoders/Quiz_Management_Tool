@@ -17,7 +17,7 @@ export default async function Cohorts() {
   console.log(Cohorts);
   return (
     <div>
-      {Cohorts.map((cohort, index) => {
+      {Cohorts.map((cohort) => {
         return (
           <div>
             <h1>Cohort Number {cohort.number}</h1>

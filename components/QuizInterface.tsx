@@ -1,11 +1,25 @@
+'use client'
+import {  useState } from 'react';
+
+
 export default function QuizInterface(quizData){
+    const [questionAnswers, setQuestionAnswers] = useState([]);
+
 function shuffleArray (array:string[]) {
+
+
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
     }
     return array;
 };
+function choiceSelectHandler(questionID, answer){
+    const filteredAnswers = questionAnswers.filter(answer=> (answer.questionNumber !== questionId))
+    filteredAnswers.push({questionNumber: questionID, response: answer})
+setQuestionAnswers(filteredAnswers)
+console.log(filteredAnswers)
+}
 const letterArray= ['a) ', 'b) ','c) ','d) ','e) ' ]
     return(
         <div>
@@ -23,14 +37,14 @@ const letterArray= ['a) ', 'b) ','c) ','d) ','e) ' ]
         <p>{index +1}. {question.question_text} </p>
         <ul>
                             {shuffledOptions.map((option, optionIndex) => (
-                                <li key={optionIndex}>{letterArray[optionIndex] + option}</li>
+                                <li key={optionIndex} onClick={()=>choiceSelectHandler(question.id, option)}>{letterArray[optionIndex] + option}</li>
                             ))}
                         </ul>
         </div>
         )
     })}
     
-    
+    <button>Submit Answers</button>
         </div>
     )
 }

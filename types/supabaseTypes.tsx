@@ -4,4 +4,8 @@ export type question = {
     wrongAnswers: string[];
     questionType: 'multiple-choice' | 'code' | 'short-answer'; 
 }
+export type answer = {
+questionId: number;
+response: string;
 
+}

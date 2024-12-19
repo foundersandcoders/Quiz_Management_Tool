@@ -1,11 +1,13 @@
 'use client'
 import uploadAnswers from '@/utils/supabase/uploadAnswers';
 import {  useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 
 
 export default function QuizInterface(quizData){
     const [questionAnswers, setQuestionAnswers] = useState([]);
     const [shuffledQuestions, setShuffledQuestions] = useState([]);
+    const router = useRouter();
 
     useMemo(() => {
         const shuffled = quizData.quizData.questions.map((question) => {
@@ -37,7 +39,8 @@ export default function QuizInterface(quizData){
 
     function submitHandler(questionAnswers, quizId){
 
-uploadAnswers(questionAnswers,  quizId)
+uploadAnswers(questionAnswers,  quizId);
+router.push('/quizzes');
     }
 
     const letterArray= ['a) ', 'b) ','c) ','d) ','e) ' ]
@@ -52,7 +55,9 @@ uploadAnswers(questionAnswers,  quizId)
             <p>{index + 1}. {question.question_text} </p>
             <ul>
                 {question.shuffledOptions.map((option, optionIndex) => (
-                    <li key={optionIndex} onClick={() => choiceSelectHandler(question.id, option)}>
+                    <li key={optionIndex} 
+                    onClick={() => choiceSelectHandler(question.id, option)}
+                    className={`cursor-pointer ${questionAnswers.some(answer => answer.questionId === question.id && answer.response === option) ? 'border border-blue-500' : ''}`} >
                         {letterArray[optionIndex] + option}
                     </li>
                 ))}

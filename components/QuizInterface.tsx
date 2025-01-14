@@ -2,12 +2,53 @@
 import uploadAnswers from '@/utils/supabase/uploadAnswers';
 import {  useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import { createClient } from '@/utils/supabase/client';
+import checkAdmin from '@/utils/supabase/checkAdmin';
 
+// dont need a 2nd param just use database checks in compnent to see if admin
+// handle review vs take via a database check so students cant submit multiple times by using take param
+//learner view if completed should show answers imedieatly
 
 export default function QuizInterface(quizData){
     const [questionAnswers, setQuestionAnswers] = useState([]);
     const [shuffledQuestions, setShuffledQuestions] = useState([]);
     const router = useRouter();
+async function completedCheck(){
+    const supabase = await createClient();
+
+    const { data: UserInformation } = await supabase.auth.getUser();
+    const { data: userData } = await supabase
+    .from('learners')
+    .select('id')
+    .eq('email', UserInformation.user?.email);
+    const { data: answerData } = await supabase
+    .from('quiz_question_learner_answers')
+    .select('quiz_id')
+    .eq('learner_id', userData[0].id );
+
+
+     
+
+    return answerData?.some(quiz => quiz.quiz_id == quizData.quizData.id) || false;
+
+}
+let viewMode = 'quiz taker'
+async function determinMode() {
+if(await completedCheck()){
+    viewMode = 'quiz reviewer'
+}
+if(await checkAdmin()){
+viewMode = 'admin'
+}
+console.log('admin check result', await checkAdmin())
+console.log(viewMode)
+}
+determinMode()
+// if(adminCheck()){
+// viewMode = 'admin'
+// }
+
+
 
     useMemo(() => {
         const shuffled = quizData.quizData.questions.map((question) => {
@@ -33,7 +74,6 @@ export default function QuizInterface(quizData){
         const filteredAnswers = questionAnswers.filter(answer=> (answer.questionId !== questionId))
         filteredAnswers.push({questionId: questionId, response: answer})
     setQuestionAnswers(filteredAnswers)
-    console.log(filteredAnswers)
     }
 
 

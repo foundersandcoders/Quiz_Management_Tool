@@ -2,7 +2,7 @@ import QuizInterface from '@/components/QuizInterface';
 import { createClient } from '@/utils/supabase/server';
 
 
-export default async function TakeQuiz({ params }: { params: { id: string } }){
+export default async function ViewQuiz({ params }: { params: { id: string } }){
 
     const supabase = await createClient();
 
@@ -16,7 +16,6 @@ export default async function TakeQuiz({ params }: { params: { id: string } }){
         ...quizData,
         questions: quizData.questions.map(q => q.questions)
     }
- console.log(flatQuizData)
  
 return(
     <QuizInterface quizData={flatQuizData}/>

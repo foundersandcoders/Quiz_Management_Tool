@@ -22,9 +22,7 @@ const Quizzes = async () => {
   if (!UserInformation) {
     return <div>User not found</div>;
   }
-  // console.log('quizquestionLearneranswers quiz 3', quizzes[2].quiz_question_learner_answers)
-  // console.log('userData', userData)
-  // console.log('filtered results',quizzes?.filter(quiz =>quiz.quiz_question_learner_answers.some((id)=>id.learner_id == userData.id)))
+
   return (
     <div>
       <p>{userData[0].cohort_number}</p>

@@ -1,5 +1,8 @@
 # Quiz_Management_Tool
 
+## Figma
+figma can be accesed [here](https://www.figma.com/design/h5p3lJqmWb0bLqERSRz5Vl/FAC-Quiz-Tool?node-id=16-109)
+
 ## User Stories
 
 ### Learner Stories

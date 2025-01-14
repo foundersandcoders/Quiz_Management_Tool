@@ -34,7 +34,7 @@ export default async function Signup(props: {
           <Label htmlFor='name'>Name</Label>
           <Input name='name' placeholder='Your name' required />
           <Label htmlFor='cohort'>Cohort</Label>
-          <Input name='cohort' placeholder='Your cohort' required />
+          <Input name='cohort' placeholder='Your cohort' />
           <Label htmlFor='password'>Password</Label>
           <Input
             type='password'

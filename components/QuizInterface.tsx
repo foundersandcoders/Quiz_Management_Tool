@@ -9,49 +9,43 @@ import checkAdmin from '@/utils/supabase/checkAdmin';
 // handle review vs take via a database check so students cant submit multiple times by using take param
 //learner view if completed should show answers imedieatly
 
-export default function QuizInterface(quizData){
-    const [questionAnswers, setQuestionAnswers] = useState([]);
+export default function QuizInterface({ quizData, answerData }){
+        const [questionAnswers, setQuestionAnswers] = useState([]);
     const [shuffledQuestions, setShuffledQuestions] = useState([]);
+    const [viewMode, setViewMode] = useState('quiz taker');
     const router = useRouter();
-async function completedCheck(){
-    const supabase = await createClient();
+    
+     function filterForQuestionAnswer(answerData, questionId){
+       const filteredQuestionData = answerData.filter(data => data.question_id === questionId)
+       console.log('answer data', answerData)
+       console.log("question id", questionId)
+       console.log('filtered question data answers', filteredQuestionData[0].answer)
 
-    const { data: UserInformation } = await supabase.auth.getUser();
-    const { data: userData } = await supabase
-    .from('learners')
-    .select('id')
-    .eq('email', UserInformation.user?.email);
-    const { data: answerData } = await supabase
-    .from('quiz_question_learner_answers')
-    .select('quiz_id')
-    .eq('learner_id', userData[0].id );
+      
+      return filteredQuestionData[0].answer 
 
+    
+    //   return filteredQuestionData.length > 0 ? filteredQuestionData[0].answer : 'none provided'
+    }
+async function completedCheck(answerData){
 
-     
-
-    return answerData?.some(quiz => quiz.quiz_id == quizData.quizData.id) || false;
+    return answerData?.some(quiz => quiz.quiz_id == quizData.id) || false;
 
 }
-let viewMode = 'quiz taker'
 async function determinMode() {
-if(await completedCheck()){
-    viewMode = 'quiz reviewer'
-}
+if(await completedCheck(answerData)){
+    setViewMode('quiz reviewer');}
 if(await checkAdmin()){
-viewMode = 'admin'
+    setViewMode('admin');}
 }
-console.log('admin check result', await checkAdmin())
-console.log(viewMode)
-}
-determinMode()
-// if(adminCheck()){
-// viewMode = 'admin'
-// }
 
 
 
     useMemo(() => {
-        const shuffled = quizData.quizData.questions.map((question) => {
+        //error that says should be in use effect memo seems fine
+        determinMode()
+
+        const shuffled = quizData.questions.map((question) => {
             const options = [question.question_answer, ...question.question_false_answers];
             return {
                 ...question,
@@ -86,12 +80,14 @@ router.push('/quizzes');
     const letterArray= ['a) ', 'b) ','c) ','d) ','e) ' ]
     return(
         <div>
-    <h1>{quizData.quizData.quiz_name}</h1>
-    <h2>assigned {quizData.quizData.opens_at}</h2>
-    <h2>due date {quizData.quizData.closes_at}</h2>
+    <h1>View Mode {viewMode}</h1>
+    <h1>{quizData.quiz_name}</h1>
+    <h2>assigned {quizData.opens_at}</h2>
+    <h2>due date {quizData.closes_at}</h2>
     {/* format time */}
     {shuffledQuestions.map((question, index) => (
         <div key={question.id}>
+            {viewMode == 'quiz taker' || viewMode == 'quiz reviewer' &&<button> Report Error</button>}
             <p>{index + 1}. {question.question_text} </p>
             <ul>
                 {question.shuffledOptions.map((option, optionIndex) => (
@@ -102,10 +98,11 @@ router.push('/quizzes');
                     </li>
                 ))}
             </ul>
+           {viewMode == 'quiz reviewer' && <p>correct answer {quizData.questions[index].question_answer} your answer {filterForQuestionAnswer(answerData, question.id)}</p>}
         </div>
     ))}
     
-    <button onClick={()=> submitHandler(questionAnswers,quizData.quizData.id)}>Submit Answers</button>
+   {viewMode == 'quiz taker' && <button onClick={()=> submitHandler(questionAnswers,quizData.id)}>Submit Answers</button>}
         </div>
     )
 }

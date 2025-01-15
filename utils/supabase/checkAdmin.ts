@@ -12,8 +12,11 @@ export default async function checkAdmin() {
     .from('cohorts')
     .select('number');
 
-// console.log(cohortData)
-    if (UserInformation.user?.email?.includes('@foundersandcoders.com') && cohortData.some(cohortNumber => cohortNumber > userData[0].cohort_number.number)) {
+
+
+    if (UserInformation.user?.email?.includes('@foundersandcoders.com') 
+    && (cohortData.some(cohortNumber => cohortNumber > userData[0].cohort_number) 
+    || !userData[0].cohort_number) ) {
         return true
     }
     else return false

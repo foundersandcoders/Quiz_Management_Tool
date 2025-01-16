@@ -1,4 +1,5 @@
 import QuizInterface from '@/components/QuizInterface';
+import checkAdmin from '@/utils/supabase/checkAdmin';
 import { createClient } from '@/utils/supabase/server';
 
 
@@ -9,7 +10,7 @@ export default async function ViewQuiz({ params }: { params: { id: string } }){
     const { data: quizData } = await supabase
     .from('quizzes')
     .select('*, questions:quiz_questions(questions(*))')
-    .eq('id', params.id)
+    .eq('id',  params.id)
     .single();
     const { data: UserInformation } = await supabase.auth.getUser();
     const { data: userData } = await supabase
@@ -25,9 +26,26 @@ export default async function ViewQuiz({ params }: { params: { id: string } }){
         ...quizData,
         questions: quizData.questions.map(q => q.questions)
     }
- console.log('anser data from page', answerData)
+
+let viewMode ='quiz taker'
+     function completedCheck(answerData){
+
+        return answerData?.some(quiz => quiz.quiz_id == quizData.id) || false;
+    
+    }
+     async function determinMode() {
+        console.log('function ran')
+    if( completedCheck(answerData)){
+        viewMode ='quiz reviewer';}
+    if(await checkAdmin()){
+       viewMode ='admin';}
+       
+    }
+    await determinMode();
+    console.log('view mode in page', viewMode)
+
 return(
-    <QuizInterface quizData={flatQuizData} answerData={answerData}/>
+    <QuizInterface quizData={flatQuizData} answerData={answerData} viewMode={viewMode}/>
 )
 
 }

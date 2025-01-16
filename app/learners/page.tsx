@@ -14,7 +14,6 @@ export default async function Cohorts() {
                 )
             )
         `);
-  console.log(Cohorts);
   return (
     <div>
       {Cohorts.map((cohort) => {

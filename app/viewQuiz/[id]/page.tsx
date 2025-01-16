@@ -1,4 +1,5 @@
 import QuizInterface from '@/components/QuizInterface';
+import { quizResponse } from '@/types/supabaseTypes';
 import checkAdmin from '@/utils/supabase/checkAdmin';
 import { createClient } from '@/utils/supabase/server';
 
@@ -28,13 +29,12 @@ export default async function ViewQuiz({ params }: { params: { id: string } }){
     }
 
 let viewMode ='quiz taker'
-     function completedCheck(answerData){
+     function completedCheck(answerData: quizResponse[] | null){
 
         return answerData?.some(quiz => quiz.quiz_id == quizData.id) || false;
     
     }
      async function determinMode() {
-        console.log('function ran')
     if( completedCheck(answerData)){
         viewMode ='quiz reviewer';}
     if(await checkAdmin()){
@@ -42,7 +42,6 @@ let viewMode ='quiz taker'
        
     }
     await determinMode();
-    console.log('view mode in page', viewMode)
 
 return(
     <QuizInterface quizData={flatQuizData} answerData={answerData} viewMode={viewMode}/>

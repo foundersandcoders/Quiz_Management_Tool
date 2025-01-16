@@ -4,46 +4,22 @@ import {  useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import checkAdmin from '@/utils/supabase/checkAdmin';
+import filterForQuestionAnswer from '@/utils/filterForQuestionAnswers';
+import calculateScores from '@/utils/calculateScore';
 
-// dont need a 2nd param just use database checks in compnent to see if admin
-// handle review vs take via a database check so students cant submit multiple times by using take param
-//learner view if completed should show answers imedieatly
+
 
 export default function QuizInterface({ quizData, answerData, viewMode }){
         const [questionAnswers, setQuestionAnswers] = useState([]);
     const [shuffledQuestions, setShuffledQuestions] = useState([]);
-    // const [viewMode, setViewMode] = useState('quiz taker');
     const router = useRouter();
-    console.log('view mode in component', viewMode)
-     function filterForQuestionAnswer(answerData, questionId){
-       const filteredQuestionData = answerData.filter(data => data.question_id === questionId)
-       console.log('answer data', answerData)
-       console.log("question id", questionId)
-       console.log('filtered question data answers', filteredQuestionData[0].answer)
-
-      
-      return filteredQuestionData[0].answer 
-
     
-    //   return filteredQuestionData.length > 0 ? filteredQuestionData[0].answer : 'none provided'
-    }
-// async function completedCheck(answerData){
-
-//     return answerData?.some(quiz => quiz.quiz_id == quizData.id) || false;
-
-// }
-// async function determinMode() {
-// if(await completedCheck(answerData)){
-//     setViewMode('quiz reviewer');}
-// if(await checkAdmin()){
-//     setViewMode('admin');}
-// }
+console.log('calculated scores',calculateScores(quizData, answerData))
 
 
 
     useMemo(() => {
-        //error that says should be in use effect memo seems fine
-        // determinMode()
+       
 
         const shuffled = quizData.questions.map((question) => {
             const options = [question.question_answer, ...question.question_false_answers];
@@ -98,7 +74,7 @@ router.push('/quizzes');
                     </li>
                 ))}
             </ul>
-           {viewMode == 'quiz reviewer' && <p>correct answer {quizData.questions[index].question_answer} your answer {filterForQuestionAnswer(answerData, question.id)}</p>}
+           {viewMode == 'quiz reviewer' && <p>correct answer {quizData.questions[index].question_answer} your answer {filterForQuestionAnswer(answerData, question.id).answer}</p>}
         </div>
     ))}
     

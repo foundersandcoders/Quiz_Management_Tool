@@ -46,11 +46,10 @@ let viewMode ='quiz taker'
 if (viewMode == 'admin'){
    allStudentAnswerData  = await supabase
     .from('quiz_question_learner_answers')
-    .select('*')
+    .select('*,learners(name)')
     .eq('quiz_id', params.id);
     
 }// note is it more efficient to always do this then filter down to the use for the userAnswers
-// console.log(allStudentAnswerData)
 return(
     <QuizInterface quizData={flatQuizData} answerData={answerData} viewMode={viewMode} allStudentAnswerData={allStudentAnswerData?.data} userId={userData[0].id}/>
 )

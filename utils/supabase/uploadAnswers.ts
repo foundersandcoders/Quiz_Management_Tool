@@ -9,7 +9,6 @@ export default async function uploadAnswers(questionAnswers: answer[], quizId: n
       .select('id')
       .eq('email', UserInformation.user?.email)
       .single();
-console.log('question answers',questionAnswers)
 questionAnswers.map(async(answer)=>{
     const { data: answerData, error: answerError } = await supabase
     .from('quiz_question_learner_answers')

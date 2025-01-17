@@ -14,7 +14,6 @@ export default function QuizInterface({ quizData, answerData, viewMode, allStude
         const [questionAnswers, setQuestionAnswers] = useState([]);
     const [shuffledQuestions, setShuffledQuestions] = useState([]);
     const router = useRouter();
-    
 
 let learnerIds = [... new Set(allStudentAnswerData.map(answer => answer.learner_id))];
 let scores = learnerIds.map(learnerId => {
@@ -79,7 +78,13 @@ router.push('/quizzes');
                     </li>
                 ))}
             </ul>
-            
+            {viewMode == 'admin' && <ul>
+                <li>Student answers</li>
+            <li>correct answer {quizData.questions[index].question_answer}</li>  
+            {learnerIds.map((learner) =>(
+                <li key={question.id}>{filterForQuestionAnswer(allStudentAnswerData, question.id, learner).answer+ ' '  }{filterForQuestionAnswer(allStudentAnswerData, question.id, learner).learners?.name}</li>
+            ) )}
+            </ul> }
            {viewMode == 'quiz reviewer' && <p>correct answer {quizData.questions[index].question_answer} your answer {filterForQuestionAnswer(answerData, question.id, userId).answer}</p>}
         </div>
         //make learn id optional input so when using answer data its not needed

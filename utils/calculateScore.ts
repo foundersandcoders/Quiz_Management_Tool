@@ -2,7 +2,6 @@ import { quiz, quizResponse } from "@/types/supabaseTypes";
 import correctCheck from "./correctCheck";
 
 export default function calculateScores(quizData:quiz, answerData: quizResponse[], learnerId: number){
-  console.log('answer data in calculate score',answerData)
 
     let score = 0
     quizData.questions.forEach(question => {

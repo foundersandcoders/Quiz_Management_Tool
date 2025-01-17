@@ -19,6 +19,7 @@ export type quizResponse = {
     question_id: number;
     learner_id: number;
     answer: string;
+    learners?: {name:string}
 }
 // expand question type so that we can define quizzes as inclouding an array of question types
 export type quiz = {

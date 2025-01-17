@@ -6,17 +6,21 @@ import { createClient } from '@/utils/supabase/client';
 import checkAdmin from '@/utils/supabase/checkAdmin';
 import filterForQuestionAnswer from '@/utils/filterForQuestionAnswers';
 import calculateScores from '@/utils/calculateScore';
+import { quiz, quizResponse } from '@/types/supabaseTypes';
 
 
 
-export default function QuizInterface({ quizData, answerData, viewMode }){
+export default function QuizInterface({ quizData, answerData, viewMode, allStudentAnswerData, userId}:{quizData:quiz, answerData: quizResponse[], viewMode: 'quiz taker'| 'quiz reviewer'| 'admin', allStudentAnswerData: quizResponse[], userId: number  }){
         const [questionAnswers, setQuestionAnswers] = useState([]);
     const [shuffledQuestions, setShuffledQuestions] = useState([]);
     const router = useRouter();
     
-console.log('calculated scores',calculateScores(quizData, answerData))
 
-
+let learnerIds = [... new Set(allStudentAnswerData.map(answer => answer.learner_id))];
+let scores = learnerIds.map(learnerId => {
+    return calculateScores(quizData, allStudentAnswerData, learnerId)
+})
+const average = scores.reduce((sum, score) => sum + score, 0) / scores.length;
 
     useMemo(() => {
        
@@ -56,6 +60,7 @@ router.push('/quizzes');
     const letterArray= ['a) ', 'b) ','c) ','d) ','e) ' ]
     return(
         <div>
+            {viewMode == 'admin' && <p>Average score {average} out of {quizData.questions.length}</p>}
     <h1>View Mode {viewMode}</h1>
     <h1>{quizData.quiz_name}</h1>
     <h2>assigned {quizData.opens_at}</h2>
@@ -74,8 +79,10 @@ router.push('/quizzes');
                     </li>
                 ))}
             </ul>
-           {viewMode == 'quiz reviewer' && <p>correct answer {quizData.questions[index].question_answer} your answer {filterForQuestionAnswer(answerData, question.id).answer}</p>}
+            
+           {viewMode == 'quiz reviewer' && <p>correct answer {quizData.questions[index].question_answer} your answer {filterForQuestionAnswer(answerData, question.id, userId).answer}</p>}
         </div>
+        //make learn id optional input so when using answer data its not needed
     ))}
     
    {viewMode == 'quiz taker' && <button onClick={()=> submitHandler(questionAnswers,quizData.id)}>Submit Answers</button>}

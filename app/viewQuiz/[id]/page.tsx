@@ -18,7 +18,7 @@ export default async function ViewQuiz({ params }: { params: { id: string } }){
     .from('learners')
     .select('id')
     .eq('email', UserInformation.user?.email);
-    const { data: answerData } = await supabase
+    const { data: answerData } = await supabase // should retitle as user answer data for clarity
     .from('quiz_question_learner_answers')
     .select('*')
     .eq('learner_id', userData[0].id );
@@ -42,9 +42,17 @@ let viewMode ='quiz taker'
        
     }
     await determinMode();
-
+    let allStudentAnswerData;
+if (viewMode == 'admin'){
+   allStudentAnswerData  = await supabase
+    .from('quiz_question_learner_answers')
+    .select('*')
+    .eq('quiz_id', params.id);
+    
+}// note is it more efficient to always do this then filter down to the use for the userAnswers
+// console.log(allStudentAnswerData)
 return(
-    <QuizInterface quizData={flatQuizData} answerData={answerData} viewMode={viewMode}/>
+    <QuizInterface quizData={flatQuizData} answerData={answerData} viewMode={viewMode} allStudentAnswerData={allStudentAnswerData?.data} userId={userData[0].id}/>
 )
 
 }

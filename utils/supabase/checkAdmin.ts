@@ -15,7 +15,6 @@ export default async function checkAdmin() {
 
 
 
-
     if (userInformation.user?.email?.includes('@foundersandcoders.com') 
     && (cohortData.some(cohortNumber => cohortNumber > userData[0].cohort_number) 
     || !userData[0].cohort_number) ) {

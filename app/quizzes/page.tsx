@@ -27,7 +27,7 @@ const Quizzes = async () => {
     <div>
       <p>{userData[0].cohort_number}</p>
 <h1>Current Quizzes</h1>
-{quizzes.filter(quiz => new Date(quiz.closes_at) > new Date()).map((quiz, index) => {
+{quizzes.filter(quiz => new Date(quiz.closes_at) > new Date() && !quiz.quiz_question_learner_answers.some((id)=>id.learner_id == userData[0].id)).map((quiz, index) => {
 
         return (
           <div key={index}>
@@ -37,7 +37,7 @@ const Quizzes = async () => {
         );
       })}
 <h1>Overdue Quizzes</h1>
-{quizzes.filter(quiz => new Date(quiz.closes_at) <= new Date() && quiz.quiz_question_learner_answers.some((id)=>id.learner_id != userData[0].id)).map((quiz, index) => {
+{quizzes.filter(quiz => new Date(quiz.closes_at) <= new Date() && !quiz.quiz_question_learner_answers.some((id)=>id.learner_id == userData[0].id)).map((quiz, index) => {
         return (
           <div key={index}>
             <h1>{quiz.quiz_name}</h1>

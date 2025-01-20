@@ -11,8 +11,7 @@ export default async function checkAdmin() {
     const { data: cohortData } = await supabase
     .from('cohorts')
     .select('number');
-
-// console.log(cohortData)
+// make sure no cohort users can get through
     if (UserInformation.user?.email?.includes('@foundersandcoders.com') && cohortData.some(cohortNumber => cohortNumber > userData[0].cohort_number.number)) {
         return true
     }

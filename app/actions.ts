@@ -30,13 +30,16 @@ export const signUpAction = async (formData: FormData) => {
   });
   const { data, error: insertError } = await supabase
     .from('learners')
-    .insert({ name: name, cohort_id: cohort, email: email });
+    .insert({
+      name: name,
+      email: email,
+      ...(cohort && { cohort_number: cohort }) 
+    });
 
   if (insertError) {
     console.error('Insertion error:', insertError.message);
     // Optionally, return an error response or handle it as needed
   } else {
-    console.log('Insertion successful:', data);
   }
 
   if (error) {

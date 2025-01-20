@@ -1,18 +1,24 @@
-import { createClient } from '@/utils/supabase/client';
+import { createClient } from '@/utils/supabase/server';
 
 export default async function checkAdmin() {
+
     const supabase = await createClient();
 
-    const { data: UserInformation } = await supabase.auth.getUser();
+    const { data: userInformation } = await supabase.auth.getUser();
     const { data: userData } = await supabase
     .from('learners')
     .select('id,cohort_number')
-    .eq('email', UserInformation.user?.email);
+    .eq('email', userInformation.user?.email);
     const { data: cohortData } = await supabase
     .from('cohorts')
     .select('number');
-// make sure no cohort users can get through
-    if (UserInformation.user?.email?.includes('@foundersandcoders.com') && cohortData.some(cohortNumber => cohortNumber > userData[0].cohort_number.number)) {
+
+
+
+
+    if (userInformation.user?.email?.includes('@foundersandcoders.com') 
+    && (cohortData.some(cohortNumber => cohortNumber > userData[0].cohort_number) 
+    || !userData[0].cohort_number) ) {
         return true
     }
     else return false

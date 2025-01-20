@@ -4,54 +4,27 @@ import {  useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import checkAdmin from '@/utils/supabase/checkAdmin';
+import filterForQuestionAnswer from '@/utils/filterForQuestionAnswers';
+import calculateScores from '@/utils/calculateScore';
+import { quiz, quizResponse } from '@/types/supabaseTypes';
 
-// dont need a 2nd param just use database checks in compnent to see if admin
-// handle review vs take via a database check so students cant submit multiple times by using take param
-//learner view if completed should show answers imedieatly
 
-export default function QuizInterface(quizData){
-    const [questionAnswers, setQuestionAnswers] = useState([]);
+
+export default function QuizInterface({ quizData, answerData, viewMode, allStudentAnswerData, userId}:{quizData:quiz, answerData: quizResponse[], viewMode: 'quiz taker'| 'quiz reviewer'| 'admin', allStudentAnswerData: quizResponse[], userId: number  }){
+        const [questionAnswers, setQuestionAnswers] = useState([]);
     const [shuffledQuestions, setShuffledQuestions] = useState([]);
     const router = useRouter();
-async function completedCheck(){
-    const supabase = await createClient();
 
-    const { data: UserInformation } = await supabase.auth.getUser();
-    const { data: userData } = await supabase
-    .from('learners')
-    .select('id')
-    .eq('email', UserInformation.user?.email);
-    const { data: answerData } = await supabase
-    .from('quiz_question_learner_answers')
-    .select('quiz_id')
-    .eq('learner_id', userData[0].id );
-
-
-     
-
-    return answerData?.some(quiz => quiz.quiz_id == quizData.quizData.id) || false;
-
-}
-let viewMode = 'quiz taker'
-async function determinMode() {
-if(await completedCheck()){
-    viewMode = 'quiz reviewer'
-}
-if(await checkAdmin()){
-viewMode = 'admin'
-}
-console.log('admin check result', await checkAdmin())
-console.log(viewMode)
-}
-determinMode()
-// if(adminCheck()){
-// viewMode = 'admin'
-// }
-
-
+let learnerIds = [... new Set(allStudentAnswerData.map(answer => answer.learner_id))];
+let scores = learnerIds.map(learnerId => {
+    return calculateScores(quizData, allStudentAnswerData, learnerId)
+})
+const average = scores.reduce((sum, score) => sum + score, 0) / scores.length;
 
     useMemo(() => {
-        const shuffled = quizData.quizData.questions.map((question) => {
+       
+
+        const shuffled = quizData.questions.map((question) => {
             const options = [question.question_answer, ...question.question_false_answers];
             return {
                 ...question,
@@ -86,12 +59,15 @@ router.push('/quizzes');
     const letterArray= ['a) ', 'b) ','c) ','d) ','e) ' ]
     return(
         <div>
-    <h1>{quizData.quizData.quiz_name}</h1>
-    <h2>assigned {quizData.quizData.opens_at}</h2>
-    <h2>due date {quizData.quizData.closes_at}</h2>
+            {viewMode == 'admin' && <p>Average score {average} out of {quizData.questions.length}</p>}
+    <h1>View Mode {viewMode}</h1>
+    <h1>{quizData.quiz_name}</h1>
+    <h2>assigned {quizData.opens_at}</h2>
+    <h2>due date {quizData.closes_at}</h2>
     {/* format time */}
     {shuffledQuestions.map((question, index) => (
         <div key={question.id}>
+            {viewMode == 'quiz taker' || viewMode == 'quiz reviewer' &&<button> Report Error</button>}
             <p>{index + 1}. {question.question_text} </p>
             <ul>
                 {question.shuffledOptions.map((option, optionIndex) => (
@@ -102,10 +78,19 @@ router.push('/quizzes');
                     </li>
                 ))}
             </ul>
+            {viewMode == 'admin' && <ul>
+                <li>Student answers</li>
+            <li>correct answer {quizData.questions[index].question_answer}</li>  
+            {learnerIds.map((learner) =>(
+                <li key={question.id}>{filterForQuestionAnswer(allStudentAnswerData, question.id, learner).answer+ ' '  }{filterForQuestionAnswer(allStudentAnswerData, question.id, learner).learners?.name}</li>
+            ) )}
+            </ul> }
+           {viewMode == 'quiz reviewer' && <p>correct answer {quizData.questions[index].question_answer} your answer {filterForQuestionAnswer(answerData, question.id, userId).answer}</p>}
         </div>
+        //make learn id optional input so when using answer data its not needed
     ))}
     
-    <button onClick={()=> submitHandler(questionAnswers,quizData.quizData.id)}>Submit Answers</button>
+   {viewMode == 'quiz taker' && <button onClick={()=> submitHandler(questionAnswers,quizData.id)}>Submit Answers</button>}
         </div>
     )
 }

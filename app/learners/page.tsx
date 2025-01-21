@@ -1,4 +1,5 @@
 import { createClient } from '@/utils/supabase/server';
+import Link from 'next/link';
 import { useState } from 'react';
 
 export default async function Cohorts() {
@@ -31,7 +32,7 @@ export default async function Cohorts() {
                   <div key={learner.id}>
                     {' '}
                     {/* Add a key for each learner */}
-                    <p>Name: {learner.name}</p>
+                   <Link href={`/student/${learner.id}`}><p>Name: {learner.name}</p></Link> 
                     <p>Email: {learner.email}</p>
                   </div>
                 )

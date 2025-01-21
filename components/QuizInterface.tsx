@@ -14,13 +14,14 @@ export default function QuizInterface({ quizData, answerData, viewMode, allStude
         const [questionAnswers, setQuestionAnswers] = useState([]);
     const [shuffledQuestions, setShuffledQuestions] = useState([]);
     const router = useRouter();
- 
+ let average = 0
+ let learnerIds =[] 
     if(viewMode == 'admin'){
-const learnerIds = [... new Set(allStudentAnswerData.map(answer => answer.learner_id))];
+ learnerIds = [... new Set(allStudentAnswerData.map(answer => answer.learner_id))];
 const scores = learnerIds.map(learnerId => {
     return calculateScores(quizData, allStudentAnswerData, learnerId)
 })
-const average = scores.reduce((sum, score) => sum + score, 0) / scores.length;
+ average = scores.reduce((sum, score) => sum + score, 0) / scores.length;
 }
 
     useMemo(() => {

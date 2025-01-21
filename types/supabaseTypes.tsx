@@ -31,3 +31,11 @@ export type quiz = {
     cohort_number: number;
     questions: question[]; 
 }
+export type student = {
+    id: number; 
+    created_at: string; 
+    cohort_number: number; 
+    name: string; 
+    email: string; 
+    quiz_question_learner_answers?: quizResponse[]
+}

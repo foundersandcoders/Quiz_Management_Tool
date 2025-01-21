@@ -1,4 +1,5 @@
 import { createClient } from '@/utils/supabase/server';
+import Link from 'next/link';
 
 const Quizzes = async () => {
   const supabase = await createClient();
@@ -8,6 +9,9 @@ const Quizzes = async () => {
     .from('learners')
     .select('id,cohort_number')
     .eq('email', UserInformation.user?.email);
+    if(!userData[0].cohort_number){
+return('page is meant for users who are part of a cohort')
+    }
   const { data: quizzes } = await supabase
     .from('quizzes')
     .select(
@@ -31,7 +35,7 @@ const Quizzes = async () => {
 
         return (
           <div key={index}>
-            <h1>{quiz.quiz_name}</h1>
+            <Link href={`/viewQuiz/${quiz.id}`}><h1>{quiz.quiz_name}</h1></Link>
             <p>Due date {quiz.closes_at}</p>
           </div>
         );
@@ -40,7 +44,7 @@ const Quizzes = async () => {
 {quizzes.filter(quiz => new Date(quiz.closes_at) <= new Date() && !quiz.quiz_question_learner_answers.some((id)=>id.learner_id == userData[0].id)).map((quiz, index) => {
         return (
           <div key={index}>
-            <h1>{quiz.quiz_name}</h1>
+            <Link href={`/viewQuiz/${quiz.id}`}><h1>{quiz.quiz_name}</h1></Link>
             <p>Due date {quiz.closes_at}</p>
           </div>
         );
@@ -50,7 +54,7 @@ const Quizzes = async () => {
       {quizzes?.filter(quiz =>quiz.quiz_question_learner_answers.some((id)=>id.learner_id == userData[0].id)).map((quiz, index) => {
         return (
           <div key={index}>
-            <h1>{quiz.quiz_name}</h1>
+            <Link href={`/viewQuiz/${quiz.id}`}><h1>{quiz.quiz_name}</h1></Link>
             <p>Due date {quiz.closes_at}</p>
           </div>
         );

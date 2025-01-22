@@ -7,12 +7,14 @@ import checkAdmin from '@/utils/supabase/checkAdmin';
 import filterForQuestionAnswer from '@/utils/filterForQuestionAnswers';
 import calculateScores from '@/utils/calculateScore';
 import { quiz, quizResponse } from '@/types/supabaseTypes';
+import AddModal from './addModal';
 
 
 
 export default function QuizInterface({ quizData, answerData, viewMode, allStudentAnswerData, userId}:{quizData:quiz, answerData: quizResponse[], viewMode: 'quiz taker'| 'quiz reviewer'| 'admin', allStudentAnswerData: quizResponse[], userId: number  }){
-        const [questionAnswers, setQuestionAnswers] = useState([]);
+    const [questionAnswers, setQuestionAnswers] = useState([]);
     const [shuffledQuestions, setShuffledQuestions] = useState([]);
+    const [isOpen, setIsOpen]= useState(false)
     const router = useRouter();
  let average = 0
  let learnerIds =[] 
@@ -52,7 +54,9 @@ const scores = learnerIds.map(learnerId => {
     setQuestionAnswers(filteredAnswers)
     }
 
-
+    function addQuestionHandler(setIsOpen){
+        setIsOpen(true)
+    }
     function submitHandler(questionAnswers, quizId){
 
 uploadAnswers(questionAnswers,  quizId);
@@ -92,8 +96,11 @@ router.push('/quizzes');
         </div>
         //make learn id optional input so when using answer data its not needed
     ))}
-    
+    {viewMode == 'admin' && <button onClick={()=>addQuestionHandler(setIsOpen)}>Add Question</button>} 
+    {isOpen && <AddModal targetTable={'questions'}  setIsOpen={setIsOpen}/>}
+    {/* add logic so this only appears if quiz has not gone live yet */}
    {viewMode == 'quiz taker' && <button onClick={()=> submitHandler(questionAnswers,quizData.id)}>Submit Answers</button>}
+
         </div>
     )
 }

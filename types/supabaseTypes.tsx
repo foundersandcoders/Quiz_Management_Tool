@@ -39,3 +39,11 @@ export type student = {
     email: string; 
     quiz_question_learner_answers?: quizResponse[]
 }
+export type FieldConfig = {
+    name: string;
+    label: string;
+    type: 'short' | 'long';
+    defaultValue?: string | number;
+    required?: boolean;
+    validation?: (value: any) => boolean | string;
+  }

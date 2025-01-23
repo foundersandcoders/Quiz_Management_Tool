@@ -8,6 +8,7 @@ import filterForQuestionAnswer from '@/utils/filterForQuestionAnswers';
 import calculateScores from '@/utils/calculateScore';
 import { quiz, quizResponse } from '@/types/supabaseTypes';
 import AddModal from './addModal';
+import addQuestion from '@/utils/supabase/addQuestion';
 
 
 
@@ -97,7 +98,7 @@ router.push('/quizzes');
         //make learn id optional input so when using answer data its not needed
     ))}
     {viewMode == 'admin' && <button onClick={()=>addQuestionHandler(setIsOpen)}>Add Question</button>} 
-    {isOpen && <AddModal targetTable={'questions'}  setIsOpen={setIsOpen}/>}
+    {isOpen && <AddModal dataFunction={addQuestion}  setIsOpen={setIsOpen} relevantId={quizData.id} />}
     {/* add logic so this only appears if quiz has not gone live yet */}
    {viewMode == 'quiz taker' && <button onClick={()=> submitHandler(questionAnswers,quizData.id)}>Submit Answers</button>}
 

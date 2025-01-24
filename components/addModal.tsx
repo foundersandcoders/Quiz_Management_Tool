@@ -3,6 +3,7 @@ import { useState } from "react";
 
 export default function AddModal({dataFunction, setIsOpen, relevantId}: {}) {
     const defaultFormData =setDefaultFormData(dataFunction) 
+    console.log('default form data',defaultFormData)
     const [formData, setFormData] = useState(defaultFormData.reduce((acc, field) => ({
         ...acc,
         [field.name]: field.defaultValue || ''

@@ -1,9 +1,17 @@
+import ButtonWithModal from '@/components/ButtonWithModal';
+import ButtonWithModalForStudent from '@/components/ButtonWithModalForStudent';
 import { quiz, student } from '@/types/supabaseTypes';
 import calculateScores from '@/utils/calculateScore';
+import addStudentNote from '@/utils/supabase/addStudentNote';
+import checkAdmin from '@/utils/supabase/checkAdmin';
 import { createClient } from '@/utils/supabase/server';
 import Link from 'next/link';
 
 export default async function Student({ params }: { params: { id: number } }){
+    if(!await checkAdmin()){
+        return('page is for admin users')
+    }
+    
     const supabase = await createClient();
     let studentData:student | null = null; 
     let quizData:quiz[] | null = null ;
@@ -46,7 +54,15 @@ export default async function Student({ params }: { params: { id: number } }){
     } catch (err) {
         console.error('Error fetching quiz data:', err);
     }
+    const { data: notesData, error: notesError } = await supabase
+    .from('learner_notes')
+    .select('*')
+    .eq('learner_id', params.id);
 
+if (notesError) {
+    throw new Error(`Database error fetching notes: ${notesError.message}`);
+}
+console.log(notesData)
     if (!studentData) {
         return 'error student data not defined'; 
     }
@@ -67,7 +83,18 @@ export default async function Student({ params }: { params: { id: number } }){
 
 
 <p>Notes</p>
+{notesData.map((note) => (
+    <div>
+                    <p> Date {note.created_at}</p>
+                    <p key={note.id}>{note.note_content}</p>
 
+                    </div>
+                ))}
+<ButtonWithModalForStudent 
+
+    relevantId={params.id} 
+    buttonText={'Add Note'} 
+/>
     </div>
 )
 

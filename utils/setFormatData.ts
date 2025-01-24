@@ -1,5 +1,6 @@
 import { FieldConfig } from "@/types/supabaseTypes";
 import addQuestion from "./supabase/addQuestion";
+import addStudentNote from "./supabase/addStudentNote";
 
 export function setDefaultFormData(dataFunction) {
     let defaultFormData: FieldConfig[] = [];
@@ -38,6 +39,21 @@ export function setDefaultFormData(dataFunction) {
                 }
             ];
         }
+        break;
+        case addStudentNote:{
+defaultFormData = [
+    {
+        label: "Note",
+        name: "content",
+        type: 'long',
+        required: true
+    }
+
+]
+
+        }
+        break;
+
     }
     return defaultFormData; 
 }

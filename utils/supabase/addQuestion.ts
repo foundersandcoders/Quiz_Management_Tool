@@ -9,8 +9,7 @@ const formatedQuestion:question = {
     questionType: 'multiple-choice',
     question_false_answers: [ newQuestion.wrongAnswer1 ,newQuestion.wrongAnswer2, newQuestion.wrongAnswer3]
 }
-console.log('function running and here is new question')
-console.log(newQuestion)
+
     const { data: questionData, error: questionError } = await supabase
         .from('questions')
         .insert({
@@ -27,7 +26,6 @@ console.log(newQuestion)
         return;
     }
 
-    // Link the new question to the quiz
     const { data: joinData, error: joinError } = await supabase
         .from('quiz_questions')
         .insert({

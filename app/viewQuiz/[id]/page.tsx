@@ -10,7 +10,7 @@ export default async function ViewQuiz({ params }: { params: { id: string } }){
 
     const { data: quizData } = await supabase
     .from('quizzes')
-    .select('*, questions:quiz_questions(questions(*))')
+    .select('*, questions:quiz_questions(questions(*, reported_errors(*)))')
     .eq('id',  params.id)
     .single();
     const { data: UserInformation } = await supabase.auth.getUser();
@@ -27,7 +27,7 @@ export default async function ViewQuiz({ params }: { params: { id: string } }){
         ...quizData,
         questions: quizData.questions.map(q => q.questions)
     }
-
+console.log(flatQuizData)
 let viewMode ='quiz taker'
      function completedCheck(answerData: quizResponse[] | null){
 

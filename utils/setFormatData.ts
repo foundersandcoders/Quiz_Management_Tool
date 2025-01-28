@@ -2,6 +2,7 @@ import { FieldConfig } from "@/types/supabaseTypes";
 import addQuestion from "./supabase/addQuestion";
 import addStudentNote from "./supabase/addStudentNote";
 import addQuizRecourse from "./supabase/addQuizRecourse";
+import addProblemReport from "./supabase/addProblemReport";
 
 export function setDefaultFormData(dataFunction) {
     let defaultFormData: FieldConfig[] = [];
@@ -71,6 +72,18 @@ defaultFormData = [
             
             ]
 
+        }
+        break;
+        case addProblemReport:{
+            defaultFormData = [
+                {
+                    label: "Describe Error",
+                    name: "reportText",
+                    type: 'long',
+                    required: true
+                }
+            
+            ]
         }
 
 

@@ -1,6 +1,7 @@
 import { FieldConfig } from "@/types/supabaseTypes";
 import addQuestion from "./supabase/addQuestion";
 import addStudentNote from "./supabase/addStudentNote";
+import addQuizRecourse from "./supabase/addQuizRecourse";
 
 export function setDefaultFormData(dataFunction) {
     let defaultFormData: FieldConfig[] = [];
@@ -53,6 +54,25 @@ defaultFormData = [
 
         }
         break;
+        case addQuizRecourse:{
+            defaultFormData = [
+                {
+                    label: "Recourse Name",
+                    name: "name",
+                    type: 'short',
+                    required: true
+                },
+                {
+                    label: "Recourse Link",
+                    name: "link",
+                    type: 'short',
+                    required: true
+                }
+            
+            ]
+
+        }
+
 
     }
     return defaultFormData; 

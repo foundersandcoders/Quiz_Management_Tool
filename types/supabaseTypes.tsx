@@ -6,6 +6,7 @@ export type question = {
     question_answer: string;
     question_false_answers?: string[]; // Optional array of false answers
     questionType: 'multiple-choice' | 'code' | 'short-answer'; 
+    reported_errors?: errorReport[]
 }
 export type answer = {
 questionId: number;
@@ -38,4 +39,18 @@ export type student = {
     name: string; 
     email: string; 
     quiz_question_learner_answers?: quizResponse[]
+}
+export type FieldConfig = {
+    name: string;
+    label: string;
+    type: 'short' | 'long';
+    defaultValue?: string | number;
+    required?: boolean;
+    validation?: (value: any) => boolean | string;
+  }
+  export type errorReport = {
+    id: number;
+    created_at: string; 
+    question_id: number;
+    report_text: string; 
 }

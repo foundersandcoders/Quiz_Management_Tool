@@ -1,19 +1,45 @@
 'use client'
 import uploadAnswers from '@/utils/supabase/uploadAnswers';
-import {  useState, useMemo } from 'react';
+import {  useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import checkAdmin from '@/utils/supabase/checkAdmin';
 import filterForQuestionAnswer from '@/utils/filterForQuestionAnswers';
 import calculateScores from '@/utils/calculateScore';
-import { quiz, quizResponse } from '@/types/supabaseTypes';
+import { errorReport, question, quiz, quizResponse } from '@/types/supabaseTypes';
+import AddModal from './addModal';
+import addQuestion from '@/utils/supabase/addQuestion';
+import addQuizRecourse from '@/utils/supabase/addQuizRecourse';
+import Link from 'next/link';
+import addProblemReport from '@/utils/supabase/addProblemReport';
 
 
 
 export default function QuizInterface({ quizData, answerData, viewMode, allStudentAnswerData, userId}:{quizData:quiz, answerData: quizResponse[], viewMode: 'quiz taker'| 'quiz reviewer'| 'admin', allStudentAnswerData: quizResponse[], userId: number  }){
-        const [questionAnswers, setQuestionAnswers] = useState([]);
+    const [questionAnswers, setQuestionAnswers] = useState([]);
     const [shuffledQuestions, setShuffledQuestions] = useState([]);
+    const [addQuestionIsOpen, setAddQuestionIsOpen] = useState(false)
+    const [addQuizRecourseIsOpen, setAddQuizRecourseIsOpen] = useState(false)
+    const [quizResources, setQuizResources] = useState([]); // State to hold quiz resources
+    const [addProblemReportIsOpen, setAddProblemReportIsOpen] = useState(false)
+
     const router = useRouter();
+// could replace by expanding original database call
+    useEffect(() => {
+
+        const fetchQuizResources = async () => {
+            const supabase = await createClient();
+
+            const { data, error } = await supabase
+            .from('quiz_recourses').select('*').eq('quiz_id', quizData.id);
+            if (error) {
+                console.error('Error fetching quiz resources:', error);
+            } else {
+                setQuizResources(data);
+            }
+        };
+        fetchQuizResources();
+    }, []); 
  let average = 0
  let learnerIds =[] 
     if(viewMode == 'admin'){
@@ -52,7 +78,15 @@ const scores = learnerIds.map(learnerId => {
     setQuestionAnswers(filteredAnswers)
     }
 
-
+    function addQuestionHandler(){
+        setAddQuestionIsOpen(true)
+    }
+    function addRecourseHandler(){
+        setAddQuizRecourseIsOpen(true)
+    }
+    function reportProblemHandler() {
+        setAddProblemReportIsOpen(true); 
+    }
     function submitHandler(questionAnswers, quizId){
 
 uploadAnswers(questionAnswers,  quizId);
@@ -62,14 +96,38 @@ router.push('/quizzes');
     const letterArray= ['a) ', 'b) ','c) ','d) ','e) ' ]
     return(
         <div>
-            {viewMode == 'admin' && <p>Average score {average} out of {quizData.questions.length} points</p>}
-    <h1>View Mode {viewMode}</h1>
+            {viewMode == 'admin' && <div>
+            <p>Average score {average} out of {quizData.questions.length} points</p>
+
+            <button onClick={()=>addRecourseHandler()}>Add Recource</button> 
+    {addQuizRecourseIsOpen && <AddModal dataFunction={addQuizRecourse}  setIsOpen={setAddQuizRecourseIsOpen} relevantId={quizData.id} />
+    }
+    {quizResources.length > 0 && (
+                <div>
+                    <h2>Resources</h2>
+                    <ul>
+                        {quizResources.map(resource => (
+                            <li key={resource.id}>
+                                <Link href={resource.recourse_link} passHref>
+                                    {resource.recourse_name}
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+            </div>
+
+}    <h1>View Mode {viewMode}</h1>
     <h1>{quizData.quiz_name}</h1>
     <h2>assigned {quizData.opens_at}</h2>
     <h2>due date {quizData.closes_at}</h2>
     {/* format time */}
-    {shuffledQuestions.map((question, index) => (
+    {shuffledQuestions.map((question:question, index) => (
         <div key={question.id}>
+<button onClick={()=>reportProblemHandler()}>Report Problem</button> 
+    {addProblemReportIsOpen && <AddModal dataFunction={addProblemReport}  setIsOpen={setAddProblemReportIsOpen} relevantId={question.id} />
+    }
             {viewMode == 'quiz taker' || viewMode == 'quiz reviewer' &&<button> Report Error</button>}
             <p>{index + 1}. {question.question_text} </p>
             <ul>
@@ -81,19 +139,35 @@ router.push('/quizzes');
                     </li>
                 ))}
             </ul>
-            {viewMode == 'admin' && <ul>
+            {viewMode == 'admin' && <div>
+            <ul>
                 <li>Student answers</li>
             <li>correct answer {quizData.questions[index].question_answer}</li>  
             {learnerIds.map((learner) =>(
                 <li key={question.id}>{filterForQuestionAnswer(allStudentAnswerData, question.id, learner).answer+ ' '  }{filterForQuestionAnswer(allStudentAnswerData, question.id, learner).learners?.name}</li>
             ) )}
-            </ul> }
+            </ul> 
+            <ul>
+            <li> Reported errors</li>
+            {question.reported_errors.map((report:errorReport)=>(
+                <>
+               <li>reported on {report.created_at}</li> 
+               <li>{report.report_text}</li>
+               </>
+            ))}
+
+            </ul>
+            </div>
+            }
            {viewMode == 'quiz reviewer' && <p>correct answer {quizData.questions[index].question_answer} your answer {filterForQuestionAnswer(answerData, question.id, userId).answer}</p>}
         </div>
         //make learn id optional input so when using answer data its not needed
     ))}
-    
+    {viewMode == 'admin' && <button onClick={()=>addQuestionHandler()}>Add Question</button>} 
+    {addQuestionIsOpen && <AddModal dataFunction={addQuestion}  setIsOpen={setAddQuestionIsOpen} relevantId={quizData.id} />}
+    {/* add logic so this only appears if quiz has not gone live yet */}
    {viewMode == 'quiz taker' && <button onClick={()=> submitHandler(questionAnswers,quizData.id)}>Submit Answers</button>}
+
         </div>
     )
 }

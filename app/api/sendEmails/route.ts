@@ -1,41 +1,41 @@
 import { NextResponse } from "next/server";
-import nodemailer from 'nodemailer';
+import { createClient } from '@/utils/supabase/server';
+import sendEmail from "@/utils/sendEmail";
+import { quiz } from "@/types/supabaseTypes";
+
+ 
+
 
 export async function GET(request) {
-  const ENVIRONMENTS = {
-    GMAIL_APP_USERNAME: process.env.GMAIL_APP_USERNAME || '',
-    GMAIL_APP_PASSWORD: process.env.GMAIL_APP_PASSWORD || '',
-  };
-  try{
-  const transport = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    auth: {
-      user: ENVIRONMENTS.GMAIL_APP_USERNAME,
-          pass: ENVIRONMENTS.GMAIL_APP_PASSWORD,
-    }
-  });
-  const mailOption = {
-    from: ENVIRONMENTS.GMAIL_APP_USERNAME,
-    to: 'anderssji94@gmail.com',
-    subject: 'New quiz Message',
-    html: `
-      <h2>Hello quiz user,</h2>
-      <h3>Name of item: </h3>
-      <p>message: </p> 
-      `,
-  };
+  const supabase = await createClient();
+  const { data: quizzes } = await supabase.from('quizzes').select(`*,cohorts(learners(email))`);
+  //need for loop to do for each quiz
+// now need an array containing the emails compress into function that takes quiz name start and end date and array of learners
+// then loop through quizzes inserting each
 
-  await transport.sendMail(mailOption);
-
+  //  return NextResponse.json(quizzes, { status: 200 });
+  
+try{
+  quizzes?.map((quiz:quiz)=>{
+    const today = new Date();
+    const formattedToday = today.toISOString().split('T')[0] + 'T00:00:00.000Z'; // Adjusting to match the format
+    const closesAtDate = new Date(quiz.closes_at);
+    const opensAtDate = new Date(quiz.opens_at);
+// lets come back to this start with getting it to handle an array we might also want to shift it to be a day before end date
+//     if (closesAtDate.toISOString() === formattedToday){
+// sendEmail(quiz.quiz_name,['anderssji94@gmail.com'],'quizClosing' )
+//     }
+//     if (closesAtDate.toISOString() === formattedToday){
+//       sendEmail(quiz.quiz_name,['anderssji94@gmail.com'],'quizClosing' )
+//           }
+//   })
   return NextResponse.json(
     { message: 'Email Sent Successfully' },
     { status: 200 }
   );
 } catch (error) {
   return NextResponse.json(
-    { message: 'Failed to Send Email' },
+    { message: 'Failed to Send Email', error },
     { status: 500 }
   );
 }

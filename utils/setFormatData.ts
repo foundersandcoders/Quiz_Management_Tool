@@ -3,6 +3,7 @@ import addQuestion from "./supabase/addQuestion";
 import addStudentNote from "./supabase/addStudentNote";
 import addQuizRecourse from "./supabase/addQuizRecourse";
 import addProblemReport from "./supabase/addProblemReport";
+import addCohort from "./supabase/addCohort";
 
 export function setDefaultFormData(dataFunction) {
     let defaultFormData: FieldConfig[] = [];
@@ -85,7 +86,33 @@ defaultFormData = [
             
             ]
         }
+break;
+case addCohort:{
+    defaultFormData = [
+        {
+            label: "Cohort Number",
+            name: "cohortNumber",
+            type: 'short',
+            required: true
+        },
+        {
+            label: "Start Date",
+            name: "startDate",
+            type: 'date',
+            required: true
+        }
+        ,
+        {
+            label: "End Date",
+            name: "endDate",
+            type: 'date',
+            required: true
+        }
+    
+    ]
 
+}
+break;
 
     }
     return defaultFormData; 

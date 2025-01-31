@@ -43,7 +43,7 @@ export type student = {
 export type FieldConfig = {
     name: string;
     label: string;
-    type: 'short' | 'long';
+    type: 'short' | 'long' | 'date';
     defaultValue?: string | number;
     required?: boolean;
     validation?: (value: any) => boolean | string;
@@ -54,3 +54,4 @@ export type FieldConfig = {
     question_id: number;
     report_text: string; 
 }
+

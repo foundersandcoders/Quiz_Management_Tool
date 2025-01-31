@@ -9,28 +9,35 @@ import { quiz } from "@/types/supabaseTypes";
 export async function GET(request) {
   const supabase = await createClient();
   const { data: quizzes } = await supabase.from('quizzes').select(`*,cohorts(learners(email))`);
-  //need for loop to do for each quiz
-// now need an array containing the emails compress into function that takes quiz name start and end date and array of learners
-// then loop through quizzes inserting each
-
-  //  return NextResponse.json(quizzes, { status: 200 });
+ // bring in date checks make a quiz that starts today and one that ends today to test
   
 try{
+
   quizzes?.map((quiz:quiz)=>{
+let emailArray:string[] = []
+
+quiz.cohorts.learners.map((email)=>{emailArray.push(email.email)})
+ 
+ 
     const today = new Date();
-    const formattedToday = today.toISOString().split('T')[0] + 'T00:00:00.000Z'; // Adjusting to match the format
+    const formattedToday = today.toISOString().split('T')[0]; // Only keep the date part (YYYY-MM-DD)
     const closesAtDate = new Date(quiz.closes_at);
     const opensAtDate = new Date(quiz.opens_at);
-// lets come back to this start with getting it to handle an array we might also want to shift it to be a day before end date
-//     if (closesAtDate.toISOString() === formattedToday){
-// sendEmail(quiz.quiz_name,['anderssji94@gmail.com'],'quizClosing' )
-//     }
-//     if (closesAtDate.toISOString() === formattedToday){
-//       sendEmail(quiz.quiz_name,['anderssji94@gmail.com'],'quizClosing' )
-//           }
-//   })
+    const formattedClosesAt = closesAtDate.toISOString().split('T')[0]; // Only keep the date part (YYYY-MM-DD)
+    const formattedOpensAt = opensAtDate.toISOString().split('T')[0]; // Only keep the date part (YYYY-MM-DD)
+    console.log(formattedToday,formattedOpensAt )
+    if (formattedOpensAt === formattedToday){
+ sendEmail(quiz.quiz_name,emailArray, 'quizOpening')
+ 
+    }
+    if (formattedClosesAt === formattedToday){
+      sendEmail(quiz.quiz_name,emailArray,'quizClosing' )
+          }
+  
+          emailArray = []
+        })
   return NextResponse.json(
-    { message: 'Email Sent Successfully' },
+    { message: 'Email Sent Successfully'  },
     { status: 200 }
   );
 } catch (error) {

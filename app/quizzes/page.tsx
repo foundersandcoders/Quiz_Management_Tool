@@ -12,7 +12,7 @@ const Quizzes = async () => {
     if(!userData[0].cohort_number){
 return('page is meant for users who are part of a cohort')
     }
-  const { data: quizzes } = await supabase
+  const { data: quizzes }= await supabase
     .from('quizzes')
     .select(
       `
@@ -31,7 +31,7 @@ return('page is meant for users who are part of a cohort')
     <div>
       <p>{userData[0].cohort_number}</p>
 <h1>Current Quizzes</h1>
-{quizzes.filter(quiz => new Date(quiz.closes_at) > new Date() && !quiz.quiz_question_learner_answers.some((id)=>id.learner_id == userData[0].id)).map((quiz, index) => {
+{quizzes.filter(quiz => new Date(quiz.opens_at) < new Date() && new Date(quiz.closes_at) > new Date() && !quiz.quiz_question_learner_answers.some((id)=>id.learner_id == userData[0].id)).map((quiz, index) => {
 
         return (
           <div key={index}>

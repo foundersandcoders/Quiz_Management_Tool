@@ -39,9 +39,10 @@ return (
                 {field.required && <span className="text-red-500 ml-1">*</span>}
               </label>
               
-              {field.type === 'short' ? (
+              {field.type === 'short' || field.type === 'date' ? (
                 <input
                   id={field.name}
+                  type={field.type === 'date' ? 'date' : 'text'}
                   value={formData[field.name]}
                   onChange={(e) => handleChange(field.name, e.target.value)}
                 

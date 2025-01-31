@@ -1,8 +1,13 @@
+import ButtonWithModalForCohorts from '@/components/ButtonWithModalForCohorts';
+import checkAdmin from '@/utils/supabase/checkAdmin';
 import { createClient } from '@/utils/supabase/server';
 import Link from 'next/link';
 import { useState } from 'react';
 
 export default async function Cohorts() {
+  if(!await checkAdmin()){
+    return('page is for admin users')
+}
   const supabase = await createClient();
   const { data: Cohorts } = await supabase.from('cohorts').select(`
             *,
@@ -19,7 +24,7 @@ export default async function Cohorts() {
     <div>
       {Cohorts.map((cohort) => {
         return (
-          <div>
+          <div key={cohort.id}>
             <h1>Cohort Number {cohort.number}</h1>
             <p>start date {cohort.start_date}</p>
             <p>end date {cohort.end_date}</p>
@@ -41,6 +46,10 @@ export default async function Cohorts() {
           </div>
         );
       })}
+
+      <ButtonWithModalForCohorts
+      buttonText='Add Cohort'
+      />
     </div>
   );
 }

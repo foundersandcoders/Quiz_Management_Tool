@@ -1,4 +1,5 @@
 import ButtonWithModalForCohorts from '@/components/ButtonWithModalForCohorts';
+import { quiz } from '@/types/supabaseTypes';
 import checkAdmin from '@/utils/supabase/checkAdmin';
 import { createClient } from '@/utils/supabase/server';
 import Link from 'next/link';
@@ -11,14 +12,11 @@ export default async function Cohorts() {
   const supabase = await createClient();
   const { data: Cohorts } = await supabase.from('cohorts').select(`
             *,
+
             learners(
-                *,
-                quiz_question_learner_answers(
-                *,
-                quizzes(*),
-                questions(*)
-                )
-            )
+                *
+            ),
+            quizzes(*)
         `);
   return (
     <div>
@@ -32,16 +30,26 @@ export default async function Cohorts() {
               <h2>Learners:</h2>
               {cohort.learners.map(
                 (
-                  learner // Map through learners
+                  learner 
                 ) => (
                   <div key={learner.id}>
                     {' '}
-                    {/* Add a key for each learner */}
+                   
                    <Link href={`/student/${learner.id}`}><p>Name: {learner.name}</p></Link> 
                     <p>Email: {learner.email}</p>
                   </div>
                 )
               )}
+               <h2>Quizzes:</h2>
+              {cohort.quizzes.map((quiz:quiz)=>(
+                <div key={quiz.id}>
+                  <Link href={`/viewQuiz/${quiz.id}`}>{quiz.quiz_name}</Link>
+                  
+                </div>
+              )
+              
+            )}
+
             </div>
           </div>
         );

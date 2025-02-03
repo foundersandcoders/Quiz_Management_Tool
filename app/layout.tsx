@@ -1,4 +1,3 @@
-import DeployButton from '@/components/preGenerated/deploy-button';
 import { EnvVarWarning } from '@/components/preGenerated/env-var-warning';
 import HeaderAuth from '@/components/preGenerated/header-auth';
 import { ThemeSwitcher } from '@/components/preGenerated/theme-switcher';
@@ -7,22 +6,16 @@ import { GeistSans } from 'geist/font/sans';
 import { ThemeProvider } from 'next-themes';
 import Link from 'next/link';
 import './globals.css';
+import checkAdmin from '@/utils/supabase/checkAdmin';
 
-const defaultUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : 'http://localhost:3000';
 
-export const metadata = {
-  metadataBase: new URL(defaultUrl),
-  title: 'Next.js and Supabase Starter Kit',
-  description: 'The fastest way to build apps with Next.js and Supabase',
-};
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const adminCheckResults = await checkAdmin()
   return (
     <html lang='en' className={GeistSans.className} suppressHydrationWarning>
       <body className='bg-background text-foreground'>
@@ -37,9 +30,11 @@ export default function RootLayout({
               <nav className='w-full flex justify-center border-b border-b-foreground/10 h-16'>
                 <div className='w-full max-w-5xl flex justify-between items-center p-3 px-5 text-sm'>
                   <div className='flex gap-5 items-center font-semibold'>
-                    <Link href={'/'}>Next.js Supabase Starter</Link>
                     <div className='flex items-center gap-2'>
-                      <DeployButton />
+                   {adminCheckResults && <Link href={'/learners'}>Home</Link>}
+                   {adminCheckResults && <Link href={'/addQuiz'}>Add Quiz</Link>}
+                   {!adminCheckResults && <Link href={'/quizzes'}>Home</Link>}
+
                     </div>
                   </div>
                   {!hasEnvVars ? <EnvVarWarning /> : <HeaderAuth />}

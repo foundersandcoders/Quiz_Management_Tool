@@ -67,8 +67,11 @@ return (
 
        
 
-<button type='submit'>submit</button>
+<button type='submit'>Submit</button>
+
 </form>
+<button type='button' onClick={() => setIsOpen(false)}>Cancel</button>
+
   </div>
 </div>
 

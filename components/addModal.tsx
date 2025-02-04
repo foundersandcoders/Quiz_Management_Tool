@@ -27,8 +27,9 @@ export default function AddModal({dataFunction, setIsOpen, relevantId}: {}) {
       };
 
 return (
-<div>
-<form  onSubmit={handleSubmit}>
+<div className="fixed left-0 top-0 z-[1055] h-full w-full overflow-y-auto overflow-x-hidden outline-none flex justify-center items-center bg-black bg-opacity-50">
+  <div className="bg-background max-w-md w-full max-h-[80vh] overflow-y-auto p-6 rounded-lg shadow-lg">
+    <form  onSubmit={handleSubmit}>
         
 
         <div className="space-y-4 py-4">
@@ -68,6 +69,7 @@ return (
 
 <button type='submit'>submit</button>
 </form>
+  </div>
 </div>
 
 )

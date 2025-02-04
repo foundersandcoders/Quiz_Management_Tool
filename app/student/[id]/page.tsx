@@ -1,5 +1,6 @@
 import ButtonWithModal from '@/components/ButtonWithModal';
 import ButtonWithModalForStudent from '@/components/ButtonWithModalForStudent';
+import NotesDropdown from '@/components/NotesDropdown';
 import { quiz, student } from '@/types/supabaseTypes';
 import calculateScores from '@/utils/calculateScore';
 import addStudentNote from '@/utils/supabase/addStudentNote';
@@ -69,34 +70,22 @@ console.log(notesData)
 
     return (
     <div>
-<h1>Name {studentData.name}</h1>
-<Link href={`/learners`}><p>Cohort {studentData.cohort_number}</p></Link>
-<p>contact info {studentData.email}</p>
-<p>quiz scores</p>
-{quizData?.map((quiz) =>(
-    <div>
-   <p>Quiz Name {quiz.quiz_name}</p> 
-   
-   <p>Score {calculateScores(quiz, studentData.quiz_question_learner_answers, params.id)}</p>
-   </div>
-))}
+        <h1>Name {studentData.name}</h1>
+        <Link href={`/learners`}><p>Cohort {studentData.cohort_number}</p></Link>
+        <p>contact info {studentData.email}</p>
+        <p>quiz scores</p>
+        {quizData?.map((quiz) =>(
+            <div>
+                <p>Quiz Name {quiz.quiz_name}</p> 
+                <p>Score {calculateScores(quiz, studentData.quiz_question_learner_answers, params.id)}</p>
+            </div>
+        ))}
 
-
-<p>Notes</p>
-{notesData.map((note) => (
-    <div>
-                    <p> Date {note.created_at}</p>
-                    <p key={note.id}>{note.note_content}</p>
-
-                    </div>
-                ))}
-<ButtonWithModalForStudent 
-
-    relevantId={params.id} 
-    buttonText={'Add Note'} 
-/>
+        <NotesDropdown notes={notesData} />
+        <ButtonWithModalForStudent 
+            relevantId={params.id} 
+            buttonText={'Add Note'} 
+        />
     </div>
-)
-
-
+    )
 }

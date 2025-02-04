@@ -12,6 +12,8 @@ import addQuestion from '@/utils/supabase/addQuestion';
 import addQuizRecourse from '@/utils/supabase/addQuizRecourse';
 import Link from 'next/link';
 import addProblemReport from '@/utils/supabase/addProblemReport';
+import StudentAnswersDropdown from './StudentAnswersDropdown';
+import ResourcesDropdown from './ResourcesDropdown';
 
 
 
@@ -99,24 +101,11 @@ router.push('/quizzes');
             {viewMode == 'admin' && <div>
             <p>Average score {average} out of {quizData.questions.length} points</p>
 
-            <button onClick={()=>addRecourseHandler()}>Add Recource</button> 
+            <button onClick={()=>addRecourseHandler()}>Add Resource</button> 
     {addQuizRecourseIsOpen && <AddModal dataFunction={addQuizRecourse}  setIsOpen={setAddQuizRecourseIsOpen} relevantId={quizData.id} />
     }
-    {quizResources.length > 0 && (
-                <div>
-                    <h2>Resources</h2>
-                    <ul>
-                        {quizResources.map(resource => (
-                            <li key={resource.id}>
-                                <Link href={resource.recourse_link} passHref>
-                                    {resource.recourse_name}
-                                </Link>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            )}
-            </div>
+    <ResourcesDropdown resources={quizResources} />
+    </div>
 
 }    <h1>View Mode {viewMode}</h1>
     <h1>{quizData.quiz_name}</h1>
@@ -139,26 +128,25 @@ router.push('/quizzes');
                     </li>
                 ))}
             </ul>
-            {viewMode == 'admin' && <div>
-            <ul>
-                <li>Student answers</li>
-            <li>correct answer {quizData.questions[index].question_answer}</li>  
-            {learnerIds.map((learner) =>(
-                <li key={question.id}>{filterForQuestionAnswer(allStudentAnswerData, question.id, learner).answer+ ' '  }{filterForQuestionAnswer(allStudentAnswerData, question.id, learner).learners?.name}</li>
-            ) )}
-            </ul> 
-            <ul>
-            <li> Reported errors</li>
-            {question.reported_errors.map((report:errorReport)=>(
-                <>
-               <li>reported on {report.created_at}</li> 
-               <li>{report.report_text}</li>
-               </>
-            ))}
-
-            </ul>
-            </div>
-            }
+            {viewMode == 'admin' && (
+                <div>
+                    <StudentAnswersDropdown 
+                        questionId={question.id}
+                        correctAnswer={quizData.questions[index].question_answer}
+                        learnerIds={learnerIds}
+                        allStudentAnswerData={allStudentAnswerData}
+                    />
+                    <ul>
+                        <li> Reported errors</li>
+                        {question.reported_errors?.map((report:errorReport)=>(
+                            <>
+                                <li>reported on {report.created_at}</li> 
+                                <li>{report.report_text}</li>
+                            </>
+                        ))}
+                    </ul>
+                </div>
+            )}
            {viewMode == 'quiz reviewer' && <p>correct answer {quizData.questions[index].question_answer} your answer {filterForQuestionAnswer(answerData, question.id, userId).answer}</p>}
         </div>
         //make learn id optional input so when using answer data its not needed

@@ -1,10 +1,27 @@
 import FetchDataSteps from '@/components/preGenerated/tutorial/fetch-data-steps';
+import checkAdmin from '@/utils/supabase/checkAdmin';
 import { createClient } from '@/utils/supabase/server';
 import { InfoIcon } from 'lucide-react';
 import { redirect } from 'next/navigation';
 
 export default async function ProtectedPage() {
   const supabase = await createClient();
+
+ 
+    const checkUser = async () => {
+      const { data: userInformation } = await supabase.auth.getUser();
+
+      if (userInformation.user) {
+        const isAdmin = await checkAdmin();
+        if (isAdmin) {
+          return redirect('/learners'); 
+        } else {
+          return redirect('/quizzes'); 
+        }
+      }
+    };
+
+  
 
   const {
     data: { user },
@@ -13,6 +30,7 @@ export default async function ProtectedPage() {
   if (!user) {
     return redirect('/sign-in');
   }
+    await checkUser();
 
   return (
     <div className='flex-1 w-full flex flex-col gap-12'>

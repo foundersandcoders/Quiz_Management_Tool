@@ -18,13 +18,15 @@ export default async function Cohorts() {
             quizzes(*)
         `);
   return (
-    <div>
-      {Cohorts.map((cohort) => {
+    <div className='flex flex-col gap-5 '>
+      {Cohorts?.map((cohort) => {
         return (
-          <div key={cohort.id}>
+          <div key={cohort.id} className='flex flex-col md:flex-row gap-5'>
+            <div>
             <h1>Cohort Number {cohort.number}</h1>
             <p>start date {cohort.start_date}</p>
             <p>end date {cohort.end_date}</p>
+            </div>
             <LearnersDropdown learners={cohort.learners} />
             <QuizDropdown quizzes={cohort.quizzes} />
           </div>

@@ -1,5 +1,6 @@
 'use client'
 import { quiz } from '@/types/supabaseTypes';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { useState } from 'react';
 
@@ -10,8 +11,11 @@ export default function QuizDropdown({ quizzes }: { quizzes: quiz[] }) {
     <div>
       <button
         onClick={() => setIsOpen(!isOpen)}
+        className="dropdown-button"
       >
         {isOpen ? 'Hide Quizzes' : 'Show Quizzes'}
+        <ChevronDownIcon className={`dropdown-icon ${isOpen ? 'dropdown-icon-open' : ''}`} />
+
       </button>
       
       {isOpen && (

@@ -4,8 +4,9 @@ import addStudentNote from "./supabase/addStudentNote";
 import addQuizRecourse from "./supabase/addQuizRecourse";
 import addProblemReport from "./supabase/addProblemReport";
 import addCohort from "./supabase/addCohort";
+import { AddModalProps } from "@/types/formTypes";
 
-export function setDefaultFormData(dataFunction) {
+export function setDefaultFormData(dataFunction: AddModalProps["dataFunction"]) {
     let defaultFormData: FieldConfig[] = [];
     switch (dataFunction) {
         case addQuestion: {

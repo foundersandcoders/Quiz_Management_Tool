@@ -121,6 +121,8 @@ router.push('/quizzes');
                             >
                                 Add Resource
                             </button>
+                            {addQuizRecourseIsOpen && <AddModal dataFunction={addQuizRecourse}  setIsOpen={setAddQuizRecourseIsOpen} relevantId={quizData.id} />}
+
                             <ResourcesDropdown resources={quizResources} />
                         </div>
                     </div>

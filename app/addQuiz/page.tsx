@@ -11,28 +11,30 @@ const AddQuiz: React.FC = () => {
     const [quizCloseTime, setCloseTime] = useState('');//close time
 
     const [questions, setQuestions] = useState<question[]>([{ 
-        question: '', 
-        correctAnswer: '', 
-        wrongAnswers: ['', '', ''], 
+        question_text: '', 
+        question_answer: '', 
+        question_false_answers: ['', '', ''], 
         questionType: 'multiple-choice' // Default question type
     }]);
 
     const handleQuestionChange = (index: number, field: string, value: string) => {
         const newQuestions = [...questions];
         if (field === 'question') {
-            newQuestions[index].question = value;
+            newQuestions[index].question_text = value;
         } else if (field === 'correctAnswer') {
-            newQuestions[index].correctAnswer = value;
+            newQuestions[index].question_answer = value;
         } else if (field === 'questionType') {
-            newQuestions[index].questionType = value; // Update question type
+            newQuestions[index].questionType = value as "multiple-choice" | "code" | "short-answer";
         } else {
-            newQuestions[index].wrongAnswers[Number(field)] = value;
+            if (newQuestions[index].question_false_answers) {
+                newQuestions[index].question_false_answers[Number(field)] = value;
+            }
         }
         setQuestions(newQuestions);
     };
 
     const addQuestion = () => {
-        setQuestions([...questions, { question: '', correctAnswer: '', wrongAnswers: ['', '', ''], questionType: 'multiple-choice' }]);
+        setQuestions([...questions, { question_text: '', question_answer: '', question_false_answers: ['', '', ''], questionType: 'multiple-choice' }]);
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -90,7 +92,7 @@ const AddQuiz: React.FC = () => {
                             <input
                                 type="text"
                                 placeholder="Question"
-                                value={q.question}
+                                value={q.question_text}
                                 onChange={(e) => handleQuestionChange(index, 'question', e.target.value)}
                                 required
                                 className="p-2 border rounded w-full"
@@ -99,7 +101,7 @@ const AddQuiz: React.FC = () => {
                                 <input
                                     type="text"
                                     placeholder="Correct Answer"
-                                    value={q.correctAnswer}
+                                    value={q.question_answer}
                                     onChange={(e) => handleQuestionChange(index, 'correctAnswer', e.target.value)}
                                     required
                                     className="p-2 border rounded w-full"
@@ -110,12 +112,12 @@ const AddQuiz: React.FC = () => {
                                     className="p-2 border rounded w-full"
                                 >
                                     <option value="multiple-choice">Multiple Choice</option>
-                                    <option value="code">True/False</option>
+                                    <option value="true-false">True/False</option>
                                     <option value="short-answer">Short Answer</option>
                                 </select>
                             </div>
                             <div className="grid grid-cols-3 gap-4">
-                                {q.wrongAnswers.map((wrongAnswer, i) => (
+                                {q.question_false_answers?.map((wrongAnswer, i) => (
                                     <input
                                         key={i}
                                         type="text"

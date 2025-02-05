@@ -129,7 +129,9 @@ router.push('/quizzes');
 
             {/* Existing questions section */}
             {shuffledQuestions.map((question:question, index) => (
-                <div key={question.id}>
+                <div key={question.id}
+                className="border rounded-lg p-4"
+                >
                     {/* Question Content */}
                     <div className="flex gap-4">
                         <div className="flex-1">

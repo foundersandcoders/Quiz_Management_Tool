@@ -1,5 +1,6 @@
 'use client'
 import { learner_notes } from '@/types/supabaseTypes';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
 
 export default function NotesDropdown({ notes }: { notes: learner_notes[] }) {
@@ -9,8 +10,11 @@ export default function NotesDropdown({ notes }: { notes: learner_notes[] }) {
     <div>
       <button
         onClick={() => setIsOpen(!isOpen)}
+        className="dropdown-button"
       >
         {isOpen ? 'Hide Notes' : 'Show Notes'}
+        <ChevronDownIcon className={`dropdown-icon ${isOpen ? 'dropdown-icon-open' : ''}`} />
+
       </button>
       
       {isOpen && (
@@ -18,7 +22,7 @@ export default function NotesDropdown({ notes }: { notes: learner_notes[] }) {
           <ul>
             {notes.map((note) => (
               <li key={note.id}>
-                <p>Date: {note.created_at}</p>
+                <p>Date: {new Date(note.created_at).toLocaleDateString()}</p>
                 <p>{note.note_content}</p>
               </li>
             ))}

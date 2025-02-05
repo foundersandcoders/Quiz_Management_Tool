@@ -1,5 +1,6 @@
 import ButtonWithModal from '@/components/ButtonWithModal';
 import ButtonWithModalForStudent from '@/components/ButtonWithModalForStudent';
+import NotesDropdown from '@/components/NotesDropdown';
 import { quiz, student } from '@/types/supabaseTypes';
 import calculateScores from '@/utils/calculateScore';
 import addStudentNote from '@/utils/supabase/addStudentNote';
@@ -68,35 +69,35 @@ console.log(notesData)
     }
 
     return (
-    <div>
-<h1>Name {studentData.name}</h1>
-<Link href={`/learners`}><p>Cohort {studentData.cohort_number}</p></Link>
-<p>contact info {studentData.email}</p>
-<p>quiz scores</p>
-{quizData?.map((quiz) =>(
-    <div>
-   <p>Quiz Name {quiz.quiz_name}</p> 
-   
-   <p>Score {calculateScores(quiz, studentData.quiz_question_learner_answers, params.id)}</p>
-   </div>
-))}
+    <div className="container mx-auto p-6">
+        <div className="mb-8">
+            <h1 className="text-2xl font-bold mb-4 dark:text-white">{studentData.name}</h1>
+            <Link href={`/learners`} className="hover:text-blue-600 dark:hover:text-blue-400">
+                <p className="text-lg mb-2 dark:text-gray-200">Cohort {studentData.cohort_number}</p>
+            </Link>
+            <p className="text-gray-600 dark:text-gray-300 mb-6">Contact Info: {studentData.email}</p>
+        </div>
 
-
-<p>Notes</p>
-{notesData.map((note) => (
-    <div>
-                    <p> Date {note.created_at}</p>
-                    <p key={note.id}>{note.note_content}</p>
-
+        <div className="mb-8">
+            <h2 className="text-xl font-semibold mb-4 dark:text-white">Quiz Scores</h2>
+            <div className="grid gap-4">
+                {quizData?.map((quiz) => (
+                    <div key={quiz.id} className="p-4 rounded-lg border dark:border-gray-700">
+                        <p className="font-medium mb-2 dark:text-gray-200">Quiz Name: {quiz.quiz_name}</p> 
+                        <p className="dark:text-gray-300">Score: {calculateScores(quiz, studentData.quiz_question_learner_answers, params.id)}</p>
                     </div>
                 ))}
-<ButtonWithModalForStudent 
+            </div>
+        </div>
 
-    relevantId={params.id} 
-    buttonText={'Add Note'} 
-/>
+        <div className='flex flex-col gap-3 border dark:border-gray-700 rounded-lg p-6'>
+            <h2 className='text-xl font-semibold mb-2 dark:text-white'>Notes</h2>
+            <NotesDropdown notes={notesData} />
+            <ButtonWithModalForStudent 
+                relevantId={params.id} 
+                buttonText={'Add Note'} 
+            />
+        </div>
     </div>
-)
-
-
+    )
 }

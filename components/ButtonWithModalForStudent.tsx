@@ -10,7 +10,9 @@ export default function ButtonWithModalForStudent({  relevantId, buttonText }: {
     }
     return(
     <div>
-        <button onClick={openHandler}>{buttonText}</button>
+        <button onClick={openHandler}
+        className="button"
+        >{buttonText}</button>
         {isOpen && <AddModal dataFunction={addStudentNote} setIsOpen={setIsOpen} relevantId={relevantId} />}
     </div>
     )

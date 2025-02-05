@@ -10,7 +10,9 @@ export default function ButtonWithModalForCohorts({  relevantId, buttonText }: {
     }
     return(
     <div>
-        <button onClick={openHandler}>{buttonText}</button>
+        <button onClick={openHandler}
+        className="button"
+        >{buttonText}</button>
         {isOpen && <AddModal dataFunction={addCohort} setIsOpen={setIsOpen} relevantId={relevantId} />}
     </div>
     )

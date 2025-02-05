@@ -54,4 +54,17 @@ export type FieldConfig = {
     question_id: number;
     report_text: string; 
 }
+export type learner_notes = {
+    id: number;
+    created_at: string;
+    learner_id: number;
+    note_content: string;
+}
+export type quiz_recourse = {
+    id: number;
+    created_at: string;
+    recourse_name: string;
+    recourse_link: string;
+    quiz_id: number;
+}
 

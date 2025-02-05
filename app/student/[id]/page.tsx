@@ -77,19 +77,21 @@ console.log(notesData)
             </Link>
             <p className="text-gray-600 dark:text-gray-300 mb-6">Contact Info: {studentData.email}</p>
         </div>
-
         <div className="mb-8">
             <h2 className="text-xl font-semibold mb-4 dark:text-white">Quiz Scores</h2>
             <div className="grid gap-4">
                 {quizData?.map((quiz) => (
+                            <Link href={`/viewQuiz/${quiz.id}`} className="hover:text-blue-600 dark:hover:text-blue-400">
+
                     <div key={quiz.id} className="p-4 rounded-lg border dark:border-gray-700">
                         <p className="font-medium mb-2 dark:text-gray-200">Quiz Name: {quiz.quiz_name}</p> 
                         <p className="dark:text-gray-300">Score: {calculateScores(quiz, studentData.quiz_question_learner_answers, params.id)}</p>
                     </div>
+                    </Link>
+
                 ))}
             </div>
         </div>
-
         <div className='flex flex-col gap-3 border dark:border-gray-700 rounded-lg p-6'>
             <h2 className='text-xl font-semibold mb-2 dark:text-white'>Notes</h2>
             <NotesDropdown notes={notesData} />

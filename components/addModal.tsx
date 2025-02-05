@@ -1,19 +1,17 @@
 import { setDefaultFormData } from "@/utils/setFormatData";
 import { useState } from "react";
+import { FormData, AddModalProps } from "@/types/formTypes";
 
-export default function AddModal({dataFunction, setIsOpen, relevantId}: {}) {
-    const defaultFormData =setDefaultFormData(dataFunction) 
-    console.log('default form data',defaultFormData)
-    const [formData, setFormData] = useState(defaultFormData.reduce((acc, field) => ({
+export default function AddModal({ dataFunction, setIsOpen, relevantId }: AddModalProps) {
+    const defaultFormData = setDefaultFormData(dataFunction) 
+    const [formData, setFormData] = useState<FormData>(defaultFormData.reduce((acc, field) => ({
         ...acc,
         [field.name]: field.defaultValue || ''
       }), {}));
     
 
-      // new model pass in a function depending on function contruct specific data object switch case
-      // use data object to make the form
-      // use function with form data
-    function handleSubmit (e) {
+      
+    function handleSubmit (e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         dataFunction(formData,relevantId)
         setIsOpen(false)
@@ -46,14 +44,16 @@ return (
                   type={field.type === 'date' ? 'date' : 'text'}
                   value={formData[field.name]}
                   onChange={(e) => handleChange(field.name, e.target.value)}
-                
+                  className="border rounded-lg p-4"
+
                 />
               ) : (
                 <textarea
                   id={field.name}
                   value={formData[field.name]}
                   onChange={(e) => handleChange(field.name, e.target.value)}
-                  
+                  className="border rounded-lg p-4"
+
                   rows={4}
                 />
               )}

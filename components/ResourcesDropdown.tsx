@@ -15,7 +15,6 @@ export default function ResourcesDropdown({ resources }: ResourcesDropdownProps)
         <div>
             <button onClick={() => setIsOpen(!isOpen)}
             className="dropdown-button"
-
                 >
                 {isOpen ? 'Hide Resources' : 'Show Resources'}
                 <ChevronDownIcon className={`dropdown-icon ${isOpen ? 'dropdown-icon-open' : ''}`} />

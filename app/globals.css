@@ -67,3 +67,27 @@
     @apply bg-background text-foreground;
   }
 }
+
+.button {
+  @apply text-sm bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded
+}
+.button-red {
+  @apply bg-red-500
+}
+
+.dropdown-button {
+  @apply flex items-center justify-between
+         text-sm bg-white text-gray-700 
+         border border-gray-300
+         px-3 py-1 rounded
+         hover:bg-gray-50
+         gap-2;
+}
+
+.dropdown-icon {
+  @apply w-4 h-4 transition-transform;
+}
+
+.dropdown-icon-open {
+  @apply rotate-180;
+}

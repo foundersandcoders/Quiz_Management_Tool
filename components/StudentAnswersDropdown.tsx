@@ -2,6 +2,7 @@
 import { quizResponse } from '@/types/supabaseTypes';
 import { useState } from 'react';
 import filterForQuestionAnswer from '@/utils/filterForQuestionAnswers';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
 
 type StudentAnswersDropdownProps = {
     questionId: number;
@@ -20,8 +21,12 @@ export default function StudentAnswersDropdown({
 
     return (
         <div>
-            <button onClick={() => setIsOpen(!isOpen)}>
-                {isOpen ? 'Hide Student Answers' : 'Show Student Answers'}
+            <button 
+                onClick={() => setIsOpen(!isOpen)}
+                className="dropdown-button"
+            >
+                <span>{isOpen ? 'Hide Student Answers' : 'Show Student Answers'}</span>
+                <ChevronDownIcon className={`dropdown-icon ${isOpen ? 'dropdown-icon-open' : ''}`} />
             </button>
 
             {isOpen && (

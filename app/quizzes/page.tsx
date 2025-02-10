@@ -10,9 +10,11 @@ const Quizzes = async () => {
     .from('learners')
     .select('id,cohort_number')
     .eq('email', UserInformation.user?.email);
+
     if (!userData || !userData[0]) {
       return 'Error no user detected';
     }
+    
     if(!userData[0].cohort_number){
 return('page is meant for users who are part of a cohort')
     }

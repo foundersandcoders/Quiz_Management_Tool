@@ -1,9 +1,7 @@
-import ButtonWithModal from '@/components/ButtonWithModal';
 import ButtonWithModalForStudent from '@/components/ButtonWithModalForStudent';
 import NotesDropdown from '@/components/NotesDropdown';
-import { quiz, student } from '@/types/supabaseTypes';
+import { question, quiz, student } from '@/types/supabaseTypes';
 import calculateScores from '@/utils/calculateScore';
-import addStudentNote from '@/utils/supabase/addStudentNote';
 import checkAdmin from '@/utils/supabase/checkAdmin';
 import { createClient } from '@/utils/supabase/server';
 import Link from 'next/link';
@@ -36,20 +34,27 @@ export default async function Student({ params }: { params: { id: number } }){
         }
 
 
-        // console.log('student data', studentData);
     } catch (err) {
         console.error('Error fetching student data:', err);
     }
+
+    if (!studentData) {
+        return 'Error no user detected';
+      }
+
     try {
-        const quizIds = [ ... new Set(studentData?.quiz_question_learner_answers.map(response => response.quiz_id))];
-        const { data: quiz_data } = await supabase
+        type returnDataQuestion= {
+            questions:question
+        }
+        const quizIds = [ ... new Set(studentData?.quiz_question_learner_answers?.map(response => response.quiz_id))];
+        const { data: quiz_data } = await supabase 
             .from('quizzes')
             .select('*, questions:quiz_questions(questions(*))')
             .in('id', quizIds);
-        quizData = quiz_data.map(quiz => ({
+        quizData = quiz_data?.map(quiz => ({
             ...quiz,
-            questions: quiz.questions.map(q => q.questions)
-        }));
+            questions: quiz.questions.map((q:returnDataQuestion) => q.questions)
+        }))as quiz [];
         
         
     } catch (err) {
@@ -63,7 +68,6 @@ export default async function Student({ params }: { params: { id: number } }){
 if (notesError) {
     throw new Error(`Database error fetching notes: ${notesError.message}`);
 }
-console.log(notesData)
     if (!studentData) {
         return 'error student data not defined'; 
     }
@@ -85,7 +89,7 @@ console.log(notesData)
 
                     <div key={quiz.id} className="p-4 rounded-lg border dark:border-gray-700">
                         <p className="font-medium mb-2 dark:text-gray-200">Quiz Name: {quiz.quiz_name}</p> 
-                        <p className="dark:text-gray-300">Score: {calculateScores(quiz, studentData.quiz_question_learner_answers, params.id)}</p>
+                        <p className="dark:text-gray-300">Score: {studentData.quiz_question_learner_answers && calculateScores(quiz, studentData.quiz_question_learner_answers, params.id)}</p>
                     </div>
                     </Link>
 

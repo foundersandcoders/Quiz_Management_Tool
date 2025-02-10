@@ -19,7 +19,7 @@ const { data: quizData, error: quizError } = await supabase
 questionArray.forEach(async (question)=>{
   const { data: questionData, error: questionError } = await supabase
     .from('questions')
-    .insert({ "question_text": question.question, "question_answer": question.correctAnswer, "question_false_answers": question.wrongAnswers, 'question_type': question.questionType })
+    .insert({ "question_text": question.question_text, "question_answer": question.correctAnswer, "question_false_answers": question.wrongAnswers, 'question_type': question.questionType })
     .select()
     .single();
 

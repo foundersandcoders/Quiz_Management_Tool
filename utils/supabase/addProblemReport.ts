@@ -15,7 +15,6 @@ export default async function addProblemReport(problemData, questionId){
 
     if (error) {
         console.error('Error inserting recourse:', error);
-        return { success: false, error };
     }
 
     console.log('Recourse added successfully:', data);

@@ -6,33 +6,33 @@ import { question } from '@/types/supabaseTypes';
 
 const AddQuiz: React.FC = () => {
     const [quizName, setQuizName] = useState('');
-    const [quizCohort, setQuizCohort] = useState('');//cohort number
-    const [quizStartTime, setStartTime] = useState('');// open time
-    const [quizCloseTime, setCloseTime] = useState('');//close time
+    const [quizCohort, setQuizCohort] = useState('');
+    const [quizStartTime, setStartTime] = useState('');
+    const [quizCloseTime, setCloseTime] = useState('');
 
     const [questions, setQuestions] = useState<question[]>([{ 
-        question: '', 
-        correctAnswer: '', 
-        wrongAnswers: ['', '', ''], 
+        question_text: '', 
+        question_answer: '', 
+        question_false_answers: ['', '', ''], 
         questionType: 'multiple-choice' // Default question type
     }]);
 
     const handleQuestionChange = (index: number, field: string, value: string) => {
         const newQuestions = [...questions];
-        if (field === 'question') {
-            newQuestions[index].question = value;
-        } else if (field === 'correctAnswer') {
-            newQuestions[index].correctAnswer = value;
+        if (field === 'question_text') {
+            newQuestions[index].question_text = value;
+        } else if (field === 'question_answer') {
+            newQuestions[index].question_answer = value;
         } else if (field === 'questionType') {
-            newQuestions[index].questionType = value; // Update question type
-        } else {
-            newQuestions[index].wrongAnswers[Number(field)] = value;
+            newQuestions[index].questionType = value as 'multiple-choice' | 'code' | 'short-answer';
+        } else if (newQuestions[index].question_false_answers) {
+            newQuestions[index].question_false_answers[Number(field)] = value;
         }
         setQuestions(newQuestions);
     };
 
     const addQuestion = () => {
-        setQuestions([...questions, { question: '', correctAnswer: '', wrongAnswers: ['', '', ''], questionType: 'multiple-choice' }]);
+        setQuestions([...questions, { question_text: '', question_answer: '', question_false_answers: ['', '', ''], questionType: 'multiple-choice' }]);
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -88,16 +88,16 @@ const AddQuiz: React.FC = () => {
                             <input
                                 type="text"
                                 placeholder="Question"
-                                value={q.question}
-                                onChange={(e) => handleQuestionChange(index, 'question', e.target.value)}
+                                value={q.question_text}
+                                onChange={(e) => handleQuestionChange(index, 'question_text', e.target.value)}
                                 required
                                 className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:border-gray-400 mb-4"
                             />
                             <input
                                 type="text"
                                 placeholder="Correct Answer"
-                                value={q.correctAnswer}
-                                onChange={(e) => handleQuestionChange(index, 'correctAnswer', e.target.value)}
+                                value={q.question_answer}
+                                onChange={(e) => handleQuestionChange(index, 'question_answer', e.target.value)}
                                 required
                                 className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:border-gray-400 mb-4"
                             />
@@ -111,7 +111,7 @@ const AddQuiz: React.FC = () => {
                                 <option value="short-answer">Short Answer</option>
                             </select>
                             <div className="space-y-3">
-                                {q.wrongAnswers.map((wrongAnswer, i) => (
+                                {q.question_false_answers?.map((wrongAnswer, i) => (
                                     <input
                                         key={i}
                                         type="text"

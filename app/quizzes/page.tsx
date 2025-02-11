@@ -1,3 +1,4 @@
+import { quizResponse } from '@/types/supabaseTypes';
 import { createClient } from '@/utils/supabase/server';
 import Link from 'next/link';
 
@@ -9,6 +10,11 @@ const Quizzes = async () => {
     .from('learners')
     .select('id,cohort_number')
     .eq('email', UserInformation.user?.email);
+
+    if (!userData || !userData[0]) {
+      return 'Error no user detected';
+    }
+    
     if(!userData[0].cohort_number){
 return('page is meant for users who are part of a cohort')
     }
@@ -23,15 +29,16 @@ return('page is meant for users who are part of a cohort')
     )
     .eq('cohort_number', userData[0].cohort_number);
  
-  if (!UserInformation) {
-    return <div>User not found</div>;
-  }
+    if (!quizzes || quizzes.length ===0 ) {
+      return       <h1 className="text-2xl font-bold">No Quizzes Available Yet</h1>
+      
+    }
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-8">
       <h1 className="text-2xl font-bold">Open Quizzes</h1>
       <div className="space-y-4">
-        {quizzes.filter(quiz => new Date(quiz.opens_at) < new Date() && new Date(quiz.closes_at) > new Date() && !quiz.quiz_question_learner_answers.some((id)=>id.learner_id == userData[0].id)).map((quiz, index) => {
+        {quizzes.filter(quiz => new Date(quiz.opens_at) < new Date() && new Date(quiz.closes_at) > new Date() && !quiz.quiz_question_learner_answers.some((response:quizResponse)=>response.learner_id == userData[0].id)).map((quiz, index) => {
           return (
             <div key={index} className="border rounded-lg p-4">
               <Link href={`/viewQuiz/${quiz.id}`}>
@@ -45,7 +52,7 @@ return('page is meant for users who are part of a cohort')
 
       <h1 className="text-2xl font-bold">Overdue Quizzes</h1>
       <div className="space-y-4">
-        {quizzes.filter(quiz => new Date(quiz.closes_at) <= new Date() && !quiz.quiz_question_learner_answers.some((id)=>id.learner_id == userData[0].id)).map((quiz, index) => {
+        {quizzes.filter(quiz => new Date(quiz.closes_at) <= new Date() && !quiz.quiz_question_learner_answers.some((response:quizResponse)=>response.learner_id == userData[0].id)).map((quiz, index) => {
           return (
             <div key={index} className="border rounded-lg p-4">
               <Link href={`/viewQuiz/${quiz.id}`}>
@@ -59,7 +66,7 @@ return('page is meant for users who are part of a cohort')
 
       <h1 className="text-2xl font-bold">Completed Quizzes</h1>
       <div className="space-y-4">
-        {quizzes?.filter(quiz =>quiz.quiz_question_learner_answers.some((id)=>id.learner_id == userData[0].id)).map((quiz, index) => {
+        {quizzes?.filter(quiz =>quiz.quiz_question_learner_answers.some((response:quizResponse)=>response.learner_id == userData[0].id)).map((quiz, index) => {
           return (
             <div key={index} className="border rounded-lg p-4">
               <Link href={`/viewQuiz/${quiz.id}`}>

@@ -6,8 +6,11 @@ export type question = {
     question_answer: string;
     question_false_answers?: string[]; // Optional array of false answers
     questionType: 'multiple-choice' | 'code' | 'short-answer'; 
-    reported_errors?: errorReport[]
+    reported_errors?: errorReport[];
+    shuffledOptions?: string []
 }
+
+
 export type answer = {
 questionId: number;
 response: string;
@@ -46,7 +49,6 @@ export type FieldConfig = {
     type: 'short' | 'long' | 'date';
     defaultValue?: string | number;
     required?: boolean;
-    validation?: (value: any) => boolean | string;
   }
   export type errorReport = {
     id: number;
@@ -68,3 +70,6 @@ export type quiz_recourse = {
     quiz_id: number;
 }
 
+export  type returnDataQuestion= {
+    questions:question
+}

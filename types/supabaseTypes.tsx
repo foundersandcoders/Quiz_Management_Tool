@@ -68,3 +68,6 @@ export type quiz_recourse = {
     quiz_id: number;
 }
 
+export  type returnDataQuestion= {
+    questions:question
+}

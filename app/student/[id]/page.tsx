@@ -1,6 +1,6 @@
 import ButtonWithModalForStudent from '@/components/ButtonWithModalForStudent';
 import NotesDropdown from '@/components/NotesDropdown';
-import { question, quiz, student } from '@/types/supabaseTypes';
+import { question, quiz, returnDataQuestion, student } from '@/types/supabaseTypes';
 import calculateScores from '@/utils/calculateScore';
 import checkAdmin from '@/utils/supabase/checkAdmin';
 import { createClient } from '@/utils/supabase/server';
@@ -43,9 +43,7 @@ export default async function Student({ params }: { params: { id: number } }){
       }
 
     try {
-        type returnDataQuestion= {
-            questions:question
-        }
+       
         const quizIds = [ ... new Set(studentData?.quiz_question_learner_answers?.map(response => response.quiz_id))];
         const { data: quiz_data } = await supabase 
             .from('quizzes')

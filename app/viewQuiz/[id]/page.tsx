@@ -1,5 +1,5 @@
 import QuizInterface from '@/components/QuizInterface';
-import { quizResponse } from '@/types/supabaseTypes';
+import { quizResponse, returnDataQuestion } from '@/types/supabaseTypes';
 import checkAdmin from '@/utils/supabase/checkAdmin';
 import { createClient } from '@/utils/supabase/server';
 
@@ -13,22 +13,25 @@ export default async function ViewQuiz({ params }: { params: { id: string } }){
     .select('*, questions:quiz_questions(questions(*, reported_errors(*)))')
     .eq('id',  params.id)
     .single();
+    
     const { data: UserInformation } = await supabase.auth.getUser();
     const { data: userData } = await supabase
     .from('learners')
     .select('id')
     .eq('email', UserInformation.user?.email);
-    const { data: answerData } = await supabase // should retitle as user answer data for clarity
+
+    if (!userData) {
+        return 'Error no user detected';
+      }
+    const { data: answerData  } = await supabase // should retitle as user answer data for clarity
     .from('quiz_question_learner_answers')
     .select('*')
-    .eq('learner_id', userData[0].id );
-
+    .eq('learner_id', userData[0].id ) 
     const flatQuizData = {
         ...quizData,
-        questions: quizData.questions.map(q => q.questions)
+        questions: quizData.questions.map((q: returnDataQuestion) => q.questions)
     }
-console.log(flatQuizData)
-let viewMode ='quiz taker'
+let viewMode: "quiz taker" | "quiz reviewer" | "admin"  ='quiz taker'
      function completedCheck(answerData: quizResponse[] | null){
 
         return answerData?.some(quiz => quiz.quiz_id == quizData.id) || false;
@@ -42,7 +45,7 @@ let viewMode ='quiz taker'
        
     }
     await determinMode();
-    let allStudentAnswerData;
+    let allStudentAnswerData ;
 if (viewMode == 'admin'){
    allStudentAnswerData  = await supabase
     .from('quiz_question_learner_answers')
@@ -51,7 +54,7 @@ if (viewMode == 'admin'){
     
 }// note is it more efficient to always do this then filter down to the use for the userAnswers
 return(
-    <QuizInterface quizData={flatQuizData} answerData={answerData} viewMode={viewMode} allStudentAnswerData={allStudentAnswerData?.data} userId={userData[0].id}/>
+    <QuizInterface quizData={flatQuizData} answerData={answerData as quizResponse[]} viewMode={viewMode} allStudentAnswerData={allStudentAnswerData?.data as quizResponse[]} userId={userData[0].id}/>
 )
 
 }

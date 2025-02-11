@@ -31,7 +31,8 @@ export default async function ViewQuiz({ params }: { params: { id: string } }){
         ...quizData,
         questions: quizData.questions.map((q: returnDataQuestion) => q.questions)
     }
-let viewMode: "quiz taker" | "quiz reviewer" | "admin"  ='quiz taker'
+    type ViewMode<modes> = modes
+let viewMode: ViewMode<"quiz taker" | "quiz reviewer" | "admin">  ='quiz taker'
      function completedCheck(answerData: quizResponse[] | null){
 
         return answerData?.some(quiz => quiz.quiz_id == quizData.id) || false;

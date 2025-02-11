@@ -1,6 +1,6 @@
 import ButtonWithModalForStudent from '@/components/ButtonWithModalForStudent';
 import NotesDropdown from '@/components/NotesDropdown';
-import { question, quiz, returnDataQuestion, student } from '@/types/supabaseTypes';
+import { quiz, returnDataQuestion, student } from '@/types/supabaseTypes';
 import calculateScores from '@/utils/calculateScore';
 import checkAdmin from '@/utils/supabase/checkAdmin';
 import { createClient } from '@/utils/supabase/server';

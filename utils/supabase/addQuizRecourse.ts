@@ -16,7 +16,6 @@ export default async function addQuizRecourse(recourseData, quizId: number) {
 
     if (error) {
         console.error('Error inserting recourse:', error);
-        return { success: false, error };
     }
 
     console.log('Recourse added successfully:', data);

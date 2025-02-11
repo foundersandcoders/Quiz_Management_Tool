@@ -3,14 +3,12 @@ import uploadAnswers from '@/utils/supabase/uploadAnswers';
 import {  useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
-import checkAdmin from '@/utils/supabase/checkAdmin';
 import filterForQuestionAnswer from '@/utils/filterForQuestionAnswers';
 import calculateScores from '@/utils/calculateScore';
-import { errorReport, question, quiz, quizResponse } from '@/types/supabaseTypes';
+import { errorReport, question, quiz, quiz_recourse, quizResponse } from '@/types/supabaseTypes';
 import AddModal from './addModal';
 import addQuestion from '@/utils/supabase/addQuestion';
 import addQuizRecourse from '@/utils/supabase/addQuizRecourse';
-import Link from 'next/link';
 import addProblemReport from '@/utils/supabase/addProblemReport';
 import StudentAnswersDropdown from './StudentAnswersDropdown';
 import ResourcesDropdown from './ResourcesDropdown';
@@ -18,11 +16,14 @@ import ResourcesDropdown from './ResourcesDropdown';
 
 
 export default function QuizInterface({ quizData, answerData, viewMode, allStudentAnswerData, userId}:{quizData:quiz, answerData: quizResponse[], viewMode: 'quiz taker'| 'quiz reviewer'| 'admin', allStudentAnswerData: quizResponse[], userId: number  }){
-    const [questionAnswers, setQuestionAnswers] = useState([]);
-    const [shuffledQuestions, setShuffledQuestions] = useState([]);
+   
+    type QuestionForShuffle = {questionId:number, response:string }
+    
+    const [questionAnswers, setQuestionAnswers] =  useState<QuestionForShuffle[]>([]);
+    const [shuffledQuestions, setShuffledQuestions] = useState<question[]>([]);
     const [addQuestionIsOpen, setAddQuestionIsOpen] = useState(false)
     const [addQuizRecourseIsOpen, setAddQuizRecourseIsOpen] = useState(false)
-    const [quizResources, setQuizResources] = useState([]); // State to hold quiz resources
+    const [quizResources, setQuizResources] = useState<quiz_recourse[]>(); 
     const [addProblemReportIsOpen, setAddProblemReportIsOpen] = useState(false)
 
     const router = useRouter();
@@ -37,13 +38,13 @@ export default function QuizInterface({ quizData, answerData, viewMode, allStude
             if (error) {
                 console.error('Error fetching quiz resources:', error);
             } else {
-                setQuizResources(data);
+                setQuizResources(data as quiz_recourse[]);
             }
         };
         fetchQuizResources();
     }, []); 
  let average = 0
- let learnerIds =[] 
+ let learnerIds:number[] =[] 
     if(viewMode == 'admin'){
  learnerIds = [... new Set(allStudentAnswerData.map(answer => answer.learner_id))];
 const scores = learnerIds.map(learnerId => {
@@ -54,14 +55,14 @@ const scores = learnerIds.map(learnerId => {
 
     useMemo(() => {
        
-
         const shuffled = quizData.questions.map((question) => {
-            const options = [question.question_answer, ...question.question_false_answers];
+            const options = question.question_false_answers ? [question.question_answer, ...question.question_false_answers] : [question.question_answer];
             return {
                 ...question,
                 shuffledOptions: shuffleArray(options),
             };
         });
+        console.log("shuffled",shuffled)
         setShuffledQuestions(shuffled);
     }, []); 
 
@@ -74,8 +75,8 @@ const scores = learnerIds.map(learnerId => {
         }
         return array;
     };
-    function choiceSelectHandler(questionId, answer){
-        const filteredAnswers = questionAnswers.filter(answer=> (answer.questionId !== questionId))
+    function choiceSelectHandler(questionId:number, answer:string){
+        const filteredAnswers:QuestionForShuffle[] = questionAnswers.filter(answer=> (answer.questionId !== questionId))
         filteredAnswers.push({questionId: questionId, response: answer})
     setQuestionAnswers(filteredAnswers)
     }
@@ -89,7 +90,7 @@ const scores = learnerIds.map(learnerId => {
     function reportProblemHandler() {
         setAddProblemReportIsOpen(true); 
     }
-    function submitHandler(questionAnswers, quizId){
+    function submitHandler(questionAnswers:QuestionForShuffle[], quizId:number){
 
 uploadAnswers(questionAnswers,  quizId);
 router.push('/quizzes');
@@ -130,18 +131,19 @@ router.push('/quizzes');
                             </button>
                             {addQuizRecourseIsOpen && <AddModal dataFunction={addQuizRecourse}  setIsOpen={setAddQuizRecourseIsOpen} relevantId={quizData.id} />}
 
-                            <ResourcesDropdown resources={quizResources} />
+                            {quizResources && <ResourcesDropdown resources={quizResources} />}
                         </div>
                     </div>
                 )}
             </div>
 
             {/* Existing questions section */}
-            {shuffledQuestions.map((question:question, index) => (
+            {
+shuffledQuestions.map((question:question, index) => (
+               question.id && 
                 <div key={question.id}
                 className="border rounded-lg p-4"
                 >
-                    {/* Question Content */}
                     <div className="flex gap-4">
                         <div className="flex-1">
                             <div>
@@ -151,7 +153,7 @@ router.push('/quizzes');
                                 >
                                     Report Problem
                                 </button> 
-                                {addProblemReportIsOpen && 
+                                {addProblemReportIsOpen  && 
                                     <AddModal 
                                         dataFunction={addProblemReport}  
                                         setIsOpen={setAddProblemReportIsOpen} 
@@ -160,9 +162,10 @@ router.push('/quizzes');
                                 }
                                 <p>{index + 1}. {question.question_text}</p>
                                 <ul key={question.id}>
-                                    {question.shuffledOptions.map((option, optionIndex) => (
+                                    { question.shuffledOptions && question.shuffledOptions.map((option:string, optionIndex:number) => (
+                                        
                                         <li key={optionIndex} 
-                                            onClick={() => choiceSelectHandler(question.id, option)}
+                                        onClick={() => choiceSelectHandler(question.id!, option)}
                                             className={`cursor-pointer ${questionAnswers.some(answer => 
                                                 answer.questionId === question.id && 
                                                 answer.response === option) ? 'border border-blue-500' : ''

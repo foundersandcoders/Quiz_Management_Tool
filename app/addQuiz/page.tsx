@@ -130,13 +130,13 @@ const AddQuiz: React.FC = () => {
                         <button 
                             type="button" 
                             onClick={addQuestion}
-                            className="px-4 py-2 text-sm border border-gray-200 rounded-md hover:border-gray-400 focus:outline-none"
+                            className="button"
                         >
                             Add Another Question
                         </button>
                         <button 
                             type="submit"
-                            className="px-4 py-2 text-sm border border-gray-200 rounded-md hover:border-gray-400 focus:outline-none"
+                            className="button"
                         >
                             Submit Quiz
                         </button>

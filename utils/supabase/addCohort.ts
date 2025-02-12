@@ -1,14 +1,20 @@
+import { FormData } from '@/types/formTypes';
 import { createClient } from '@/utils/supabase/client';
-
-export default async function addCohort(cohortData){
+// type CohortData = {
+//     cohortNumber: string;
+//     startDate: string; 
+//     endDate: string;   
+// }
+export default async function addCohort(formdata:FormData){
+    
     const supabase = await createClient();
     try {
-        const { data, error } = await supabase
+        const {  error } = await supabase
         .from('cohorts')
         .insert({
-            "number" : cohortData.cohortNumber,
-            "start_date" : cohortData.startDate,
-            "end_date" : cohortData.endDate
+            "number" : formdata.cohortNumber,
+            "start_date" : formdata.startDate,
+            "end_date" : formdata.endDate
         });
 
         if (error) {

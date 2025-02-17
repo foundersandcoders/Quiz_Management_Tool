@@ -12,8 +12,8 @@ export default async function checkAdmin() {
     const { data: cohortData } = await supabase
     .from('cohorts')
     .select('number');
-
-
+if(!cohortData || !userData)
+{return false}
 
 
     if (userInformation.user?.email?.includes('@foundersandcoders.com') 

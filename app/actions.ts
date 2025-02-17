@@ -28,7 +28,7 @@ export const signUpAction = async (formData: FormData) => {
       emailRedirectTo: `${origin}/auth/callback`,
     },
   });
-  const { data, error: insertError } = await supabase
+  const { error: insertError } = await supabase
     .from('learners')
     .insert({
       name: name,
@@ -39,8 +39,7 @@ export const signUpAction = async (formData: FormData) => {
   if (insertError) {
     console.error('Insertion error:', insertError.message);
     // Optionally, return an error response or handle it as needed
-  } else {
-  }
+  } 
 
   if (error) {
     console.error(error.code + ' ' + error.message);

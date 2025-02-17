@@ -6,7 +6,7 @@ import { quiz } from "@/types/supabaseTypes";
  
 
 
-export async function GET(request) {
+export async function GET() {
   const supabase = await createClient();
   const { data: quizzes } = await supabase.from('quizzes').select(`*,cohorts(learners(email))`);
  // bring in date checks make a quiz that starts today and one that ends today to test
@@ -15,8 +15,9 @@ try{
 
   quizzes?.map((quiz:quiz)=>{
 let emailArray:string[] = []
-
-quiz.cohorts.learners.map((email)=>{emailArray.push(email.email)})
+if(quiz.cohorts){ 
+  quiz.cohorts.learners.map((email)=>{emailArray.push(email.email)})
+}
  
  
     const today = new Date();

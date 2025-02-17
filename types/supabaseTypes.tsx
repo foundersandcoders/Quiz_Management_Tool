@@ -25,7 +25,7 @@ export type quizResponse = {
     answer: string;
     learners?: {name:string}
 }
-// expand question type so that we can define quizzes as inclouding an array of question types
+
 export type quiz = {
     id: number;
     created_at: string;
@@ -34,6 +34,9 @@ export type quiz = {
     closes_at: string; 
     cohort_number: number;
     questions: question[]; 
+    cohorts?:{
+        learners:[{email:string}]
+    }
 }
 export type student = {
     id: number; 

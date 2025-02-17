@@ -1,13 +1,15 @@
 import { createClient } from '@/utils/supabase/client';
 import { question } from '@/types/supabaseTypes';
+import { FormData } from '@/types/formTypes';
 
-export default async function addQuestion( newQuestion, quizId: number) {
+export default async function addQuestion( newQuestion:FormData, quizId: number) {
     const supabase = await createClient();
+    
 const formatedQuestion:question = { 
     question_text: newQuestion.questionText, 
-    question_answer: newQuestion.correctAnswer,
+    question_answer: newQuestion.correctAnswer || '',
     questionType: 'multiple-choice',
-    question_false_answers: [ newQuestion.wrongAnswer1 ,newQuestion.wrongAnswer2, newQuestion.wrongAnswer3]
+    question_false_answers: [ newQuestion.wrongAnswer1 || '' ,newQuestion.wrongAnswer2 || '', newQuestion.wrongAnswer3|| ''] 
 }
 
     const { data: questionData, error: questionError } = await supabase
@@ -38,4 +40,6 @@ const formatedQuestion:question = {
     } else {
         console.log('Question added to quiz successfully:', joinData);
     }
+    window.location.reload()
+
 }

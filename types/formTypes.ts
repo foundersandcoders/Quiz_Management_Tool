@@ -1,9 +1,4 @@
-// type FormKeys = 'content' | 'cohortNumber' | 'startDate'| 'endDate'|'questionText'| 'correctAnswer'| 'wrongAnswer1'|'wrongAnswer2'|'wrongAnswer3'|'name'|'link'|'reportText'; // Define the allowed keys
 
-
-// export type FormData = {
-//   [key in FormKeys]: string;
-// }
 
 export type FormData = {
   [key: string]: string | undefined; 

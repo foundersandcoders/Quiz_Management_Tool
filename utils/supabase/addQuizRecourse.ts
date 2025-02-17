@@ -1,6 +1,7 @@
+import { FormData } from '@/types/formTypes';
 import { createClient } from '@/utils/supabase/client';
 
-export default async function addQuizRecourse(recourseData, quizId: number) {
+export default async function addQuizRecourse(recourseData:FormData, quizId: number) {
   
     const supabase = await createClient();
 

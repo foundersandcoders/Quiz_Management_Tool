@@ -13,7 +13,7 @@ export default function ButtonWithModalForCohorts({  relevantId, buttonText }: {
         <button onClick={openHandler}
         className="button"
         >{buttonText}</button>
-        {isOpen && <AddModal dataFunction={addCohort} setIsOpen={setIsOpen} relevantId={relevantId} />}
+        {isOpen && relevantId && <AddModal dataFunction={addCohort} setIsOpen={setIsOpen} relevantId={relevantId} />}
     </div>
     )
 }

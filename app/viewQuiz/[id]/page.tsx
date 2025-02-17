@@ -4,14 +4,14 @@ import checkAdmin from '@/utils/supabase/checkAdmin';
 import { createClient } from '@/utils/supabase/server';
 
 
-export default async function ViewQuiz({ params }: { params: { id: string } }){
-
+export default async function ViewQuiz({ params }:{ params : Promise<{ id : number }> }) {
     const supabase = await createClient();
+    const resolvedParams = await params; 
 
     const { data: quizData } = await supabase
     .from('quizzes')
     .select('*, questions:quiz_questions(questions(*, reported_errors(*)))')
-    .eq('id',  params.id)
+    .eq('id',   resolvedParams.id)
     .single();
     
     const { data: UserInformation } = await supabase.auth.getUser();
@@ -31,8 +31,7 @@ export default async function ViewQuiz({ params }: { params: { id: string } }){
         ...quizData,
         questions: quizData.questions.map((q: returnDataQuestion) => q.questions)
     }
-    type ViewMode<modes> = modes
-let viewMode: ViewMode<"quiz taker" | "quiz reviewer" | "admin">  ='quiz taker'
+let viewMode: string ='quiz taker'
      function completedCheck(answerData: quizResponse[] | null){
 
         return answerData?.some(quiz => quiz.quiz_id == quizData.id) || false;
@@ -51,11 +50,18 @@ if (viewMode == 'admin'){
    allStudentAnswerData  = await supabase
     .from('quiz_question_learner_answers')
     .select('*,learners(name)')
-    .eq('quiz_id', params.id);
+    .eq('quiz_id', resolvedParams.id);
     
 }// note is it more efficient to always do this then filter down to the use for the userAnswers
-return(
-    <QuizInterface quizData={flatQuizData} answerData={answerData as quizResponse[]} viewMode={viewMode} allStudentAnswerData={allStudentAnswerData?.data as quizResponse[]} userId={userData[0].id}/>
+return (
+    (viewMode === 'admin' || viewMode === 'quiz reviewer' || viewMode === 'quiz taker') && 
+    <QuizInterface 
+        quizData={flatQuizData} 
+        answerData={answerData as quizResponse[]} 
+        viewMode={viewMode} 
+        allStudentAnswerData={allStudentAnswerData?.data as quizResponse[]} 
+        userId={userData[0].id}
+    />
 )
 
 }

@@ -1,6 +1,7 @@
+import { FormData } from '@/types/formTypes';
 import { createClient } from '@/utils/supabase/client';
 
-export default async function addProblemReport(problemData, questionId){
+export default async function addProblemReport(problemData:FormData, questionId:number){
     const supabase = await createClient();
 
     const { data, error } = await supabase

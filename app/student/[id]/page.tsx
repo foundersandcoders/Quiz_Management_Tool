@@ -6,12 +6,15 @@ import checkAdmin from '@/utils/supabase/checkAdmin';
 import { createClient } from '@/utils/supabase/server';
 import Link from 'next/link';
 
-export default async function Student({ params }: { params: { id: number } }){
+export default async function Student({ params }: { params: Promise<{ id : number }>}){
+
     if(!await checkAdmin()){
-        return('page is for admin users')
+        return(<p>page is for admin users</p>)
     }
     
     const supabase = await createClient();
+    const resolvedParams = await params; 
+
     let studentData:student | null = null; 
     let quizData:quiz[] | null = null ;
     try {
@@ -24,7 +27,7 @@ export default async function Student({ params }: { params: { id: number } }){
                 quizzes(*,quiz_questions(*))
                 )
         `)
-        .eq('id', params.id)
+        .eq('id', await resolvedParams.id)
         .single();
         studentData = data; 
 
@@ -61,7 +64,7 @@ export default async function Student({ params }: { params: { id: number } }){
     const { data: notesData, error: notesError } = await supabase
     .from('learner_notes')
     .select('*')
-    .eq('learner_id', params.id);
+    .eq('learner_id', resolvedParams.id);
 
 if (notesError) {
     throw new Error(`Database error fetching notes: ${notesError.message}`);
@@ -87,7 +90,7 @@ if (notesError) {
 
                     <div key={quiz.id} className="p-4 rounded-lg border dark:border-gray-700">
                         <p className="font-medium mb-2 dark:text-gray-200">Quiz Name: {quiz.quiz_name}</p> 
-                        <p className="dark:text-gray-300">Score: {studentData.quiz_question_learner_answers && calculateScores(quiz, studentData.quiz_question_learner_answers, params.id)}</p>
+                        <p className="dark:text-gray-300">Score: {studentData.quiz_question_learner_answers && calculateScores(quiz, studentData.quiz_question_learner_answers, resolvedParams.id)}</p>
                     </div>
                     </Link>
 
@@ -98,7 +101,7 @@ if (notesError) {
             <h2 className='text-xl font-semibold mb-2 dark:text-white'>Notes</h2>
             <NotesDropdown notes={notesData} />
             <ButtonWithModalForStudent 
-                relevantId={params.id} 
+                relevantId={resolvedParams.id} 
                 buttonText={'Add Note'} 
             />
         </div>

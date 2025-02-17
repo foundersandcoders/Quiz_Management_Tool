@@ -1,14 +1,19 @@
+import { FormData } from '@/types/formTypes';
 import { createClient } from '@/utils/supabase/client';
 
-export default async function addStudentNote(note , studentId) {
+// type NoteData= {
+//     content:string
+// }
+export default async function addStudentNote(formData:FormData, relevantId:number) {
+//    const  NoteData = formData as NoteData
     const supabase = await createClient();
-    const { data } = await supabase
+     await supabase
     .from('learner_notes')
     .insert({
-        "note_content" : note.content,
-        "learner_id" : studentId
+        "note_content" : formData.content,
+        "learner_id" : relevantId
     })
     .select()
     .single();
-
+ window.location.reload()
 }

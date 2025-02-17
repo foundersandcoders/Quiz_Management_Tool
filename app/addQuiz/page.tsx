@@ -2,6 +2,7 @@
 import uploadQuiz from '@/utils/supabase/uploadQuiz';
 import React, { useState } from 'react';
 import { question } from '@/types/supabaseTypes';
+import { useRouter } from 'next/navigation';
 
 
 const AddQuiz: React.FC = () => {
@@ -9,6 +10,9 @@ const AddQuiz: React.FC = () => {
     const [quizCohort, setQuizCohort] = useState('');
     const [quizStartTime, setStartTime] = useState('');
     const [quizCloseTime, setCloseTime] = useState('');
+
+    const router = useRouter();
+
 
     const [questions, setQuestions] = useState<question[]>([{ 
         question_text: '', 
@@ -35,9 +39,11 @@ const AddQuiz: React.FC = () => {
         setQuestions([...questions, { question_text: '', question_answer: '', question_false_answers: ['', '', ''], questionType: 'multiple-choice' }]);
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit =  (e: React.FormEvent) => {
         e.preventDefault();
   uploadQuiz(quizName, questions, quizCohort, quizStartTime, quizCloseTime)
+  router.push('/learners');
+
     };
 
     return (

@@ -20,6 +20,18 @@ export default async function sendEmail(quizName:string,
               pass: ENVIRONMENTS.GMAIL_APP_PASSWORD,
         }
       });
+      await new Promise((resolve, reject) => {
+        // verify connection configuration
+        transport.verify(function (error, success) {
+            if (error) {
+                console.log(error);
+                reject(error);
+            } else {
+                console.log("Server is ready to take our messages");
+                resolve(success);
+            }
+        });
+    });
       //Quiz status used to determine both message and Title
       const mailOption = {
         from: ENVIRONMENTS.GMAIL_APP_USERNAME,
@@ -32,6 +44,17 @@ export default async function sendEmail(quizName:string,
           `,
       };
     
-      await transport.sendMail(mailOption);
-    
+      await new Promise((resolve, reject) => {
+        // send mail
+        transport.sendMail(mailOption, (err, info) => {
+            if (err) {
+                console.error(err);
+                reject(err);
+            } else {
+                console.log(info);
+                resolve(info);
+            }
+        });
+    });
+        
 }

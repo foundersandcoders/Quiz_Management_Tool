@@ -4,7 +4,7 @@ export type question = {
     created_at?: string; 
     question_text?: string;
     question_answer: string;
-    question_false_answers?: string[]; // Optional array of false answers
+    question_false_answers?: string[]; 
     questionType: 'multiple-choice' | 'code' | 'short-answer'; 
     reported_errors?: errorReport[];
     shuffledOptions?: string []

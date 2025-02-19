@@ -4,8 +4,9 @@ export default async function sendEmail(quizName:string,
     bccArray:string[], 
     quizStatus: 'quizOpening' | 'quizClosing' 
 ) {
-    console.log('quizName:', quizName);
-    console.log('bccArray:', bccArray);
+    if(bccArray.length==0){
+        return 'no recipients'
+    }
 
     const ENVIRONMENTS = {
         GMAIL_APP_USERNAME: process.env.GMAIL_APP_USERNAME || '',
@@ -43,18 +44,16 @@ export default async function sendEmail(quizName:string,
           `,
       };
     
-      const result = await new Promise((resolve, reject) => {
+      const result = await new Promise((resolve) => {
         transport.sendMail(mailOption, (err, info) => {
             if (err) {
-                console.error(err);
-                reject(err);
                 throw new Error ('error sending email' + err);
+
             } else {
-                console.log(info);
                 resolve(info);
                 
             }
         });
       });
-return result        
+return JSON.stringify(result)        
 }

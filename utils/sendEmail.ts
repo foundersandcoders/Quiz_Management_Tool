@@ -43,20 +43,18 @@ export default async function sendEmail(quizName:string,
           `,
       };
     
-      await new Promise((resolve, reject) => {
+      const result = await new Promise((resolve, reject) => {
         transport.sendMail(mailOption, (err, info) => {
             if (err) {
                 console.error(err);
                 reject(err);
-                throw new Error ('error sending email' + err)
-
-                
+                throw new Error ('error sending email' + err);
             } else {
                 console.log(info);
                 resolve(info);
-                return(info)
+                
             }
         });
-    });
-        
+      });
+return result        
 }

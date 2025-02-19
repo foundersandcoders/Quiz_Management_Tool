@@ -27,7 +27,6 @@ export default function QuizInterface({ quizData, answerData, viewMode, allStude
     const [addProblemReportIsOpen, setAddProblemReportIsOpen] = useState(false)
 
     const router = useRouter();
-// could replace by expanding original database call
     useEffect(() => {
 
         const fetchQuizResources = async () => {
@@ -62,7 +61,6 @@ const scores = learnerIds.map(learnerId => {
                 shuffledOptions: shuffleArray(options),
             };
         });
-        console.log("shuffled",shuffled)
         setShuffledQuestions(shuffled);
     }, []); 
 

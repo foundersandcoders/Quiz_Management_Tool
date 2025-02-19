@@ -4,7 +4,6 @@ import { question } from '@/types/supabaseTypes';
 export default async function uploadQuiz(quizName: string, questionArray: question[], quizCohort: string, quizStartTime: string, quizCloseTime: string){
     const supabase = await createClient();
 
-console.log('quiz name ', quizName, ' question array ', questionArray, ' quiz cohort ', quizCohort, ' quiz start time ', quizStartTime, ' quiz close time ', quizCloseTime);
 const { data: quizData, error: quizError } = await supabase
     .from('quizzes')
     .insert({ "quiz_name": quizName, "opens_at": quizStartTime, "closes_at": quizCloseTime, 'cohort_number': quizCohort })
@@ -12,7 +11,6 @@ const { data: quizData, error: quizError } = await supabase
     .single();
   if (quizError) {
     console.error('Insertion error:', quizError.message);
-    // Optionally, return an error response or handle it as needed
   } else {
     console.log('Insertion successful:', quizData);
   }
@@ -26,7 +24,6 @@ questionArray.forEach(async (question)=>{
    
   if (questionError) {
     console.error('Insertion error:', questionError.message);
-    // Optionally, return an error response or handle it as needed
   } else {
     console.log('Insertion successful:', questionData);
   }
@@ -35,7 +32,6 @@ questionArray.forEach(async (question)=>{
     .insert({ "quiz_id": quizData.id, "question_id": questionData.id, });
   if (joinError) {
     console.error('Insertion error:', joinError.message);
-    // Optionally, return an error response or handle it as needed
   } else {
     console.log('Insertion successful:', joinData);
   }

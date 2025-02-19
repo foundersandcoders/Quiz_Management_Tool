@@ -16,7 +16,6 @@ questionAnswers.map(async(answer)=>{
     .select();
   if (answerError) {
     console.error('Insertion error:', answerError.message);
-    // Optionally, return an error response or handle it as needed
   } else {
     console.log('Insertion successful:', answerData);
   }

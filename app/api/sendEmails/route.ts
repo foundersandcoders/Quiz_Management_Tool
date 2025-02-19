@@ -10,14 +10,16 @@ export async function GET() {
   const supabase = await createClient();
   const { data: quizzes } = await supabase.from('quizzes').select(`*,cohorts(learners(email))`);
  // bring in date checks make a quiz that starts today and one that ends today to test
- const openClosesArray:string[]=[]
 
  try{
-
-   quizzes?.map((quiz:quiz)=>{
+const infoArray: string [] = []
+  quizzes?.forEach(async(quiz:quiz)=>{
 let emailArray:string[] = []
 if(quiz.cohorts){ 
   quiz.cohorts.learners.map((email)=>{emailArray.push(email.email)})
+}
+else{                 
+  throw new Error("No cohort found for quiz: " + quiz.quiz_name);
 }
  
  
@@ -27,22 +29,19 @@ if(quiz.cohorts){
     const opensAtDate = new Date(quiz.opens_at);
     const formattedClosesAt = closesAtDate.toISOString().split('T')[0]; 
     const formattedOpensAt = opensAtDate.toISOString().split('T')[0]; 
-    openClosesArray.push(formattedClosesAt)
-    openClosesArray.push(formattedOpensAt)
+    
     if (formattedOpensAt === formattedToday){
-  sendEmail(quiz.quiz_name,emailArray, 'quizOpening')
+  await sendEmail(quiz.quiz_name,emailArray, 'quizOpening') 
  
     }
     if (formattedClosesAt === formattedToday){
-      sendEmail(quiz.quiz_name,emailArray,'quizClosing' )
+      await sendEmail(quiz.quiz_name,emailArray,'quizClosing'  )
           }
-  
           emailArray = []
         })
-        const testToday = new Date();
-    const formattedTestToday = testToday.toISOString().split('T')[0]; 
+        
   return NextResponse.json(
-    { message: `Email Sent Successfully,Quiz name ${quizzes?.[0]?.quizName || 'quiz undefined'},today ${formattedTestToday}, open and closes dates ${openClosesArray}`  },
+    { message: `Email Sent Successfully`  },
     { status: 200 }
   );
 } catch (error) {

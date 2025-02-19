@@ -32,7 +32,6 @@ export default async function sendEmail(quizName:string,
             }
         });
     });
-      //Quiz status used to determine both message and Title
       const mailOption = {
         from: ENVIRONMENTS.GMAIL_APP_USERNAME,
         bcc: bccArray,
@@ -45,14 +44,17 @@ export default async function sendEmail(quizName:string,
       };
     
       await new Promise((resolve, reject) => {
-        // send mail
         transport.sendMail(mailOption, (err, info) => {
             if (err) {
                 console.error(err);
                 reject(err);
+                throw new Error ('error sending email' + err)
+
+                
             } else {
                 console.log(info);
                 resolve(info);
+                return(info)
             }
         });
     });

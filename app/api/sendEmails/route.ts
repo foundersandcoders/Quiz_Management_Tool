@@ -9,7 +9,6 @@ import { quiz } from "@/types/supabaseTypes";
 export async function GET() {
   const supabase = await createClient();
   const { data: quizzes } = await supabase.from('quizzes').select(`*,cohorts(learners(email))`);
- // bring in date checks make a quiz that starts today and one that ends today to test
 
  try{
 const infoArray: string [] = []
@@ -31,12 +30,10 @@ const infoArray: string [] = []
     if (formattedOpensAt === formattedToday) {
       const emailResult = await sendEmail(quiz.quiz_name, emailArray, 'quizOpening');
       infoArray.push(emailResult);
-      console.log('info array ', infoArray);
     }
     if (formattedClosesAt === formattedToday) {
       const emailResult = await sendEmail(quiz.quiz_name, emailArray, 'quizOpening'); 
       infoArray.push(emailResult);
-      console.log('info array ', infoArray);
     }
     emailArray = [];
   }

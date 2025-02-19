@@ -31,17 +31,18 @@ else{
     const formattedOpensAt = opensAtDate.toISOString().split('T')[0]; 
     
     if (formattedOpensAt === formattedToday){
-  await sendEmail(quiz.quiz_name,emailArray, 'quizOpening') 
- 
+  const emailResult = await sendEmail(quiz.quiz_name,emailArray, 'quizOpening');
+ infoArray.push(emailResult as string)
     }
     if (formattedClosesAt === formattedToday){
-      await sendEmail(quiz.quiz_name,emailArray,'quizClosing'  )
-          }
+      const emailResult = await sendEmail(quiz.quiz_name,emailArray, 'quizOpening') 
+      infoArray.push(emailResult as string)
+    }
           emailArray = []
         })
         
   return NextResponse.json(
-    { message: `Email Sent Successfully`  },
+    { message: `Email Sent Successfully`, infoArray  },
     { status: 200 }
   );
 } catch (error) {
@@ -51,5 +52,4 @@ else{
   );
 }
   
-// can try using promises 
 }

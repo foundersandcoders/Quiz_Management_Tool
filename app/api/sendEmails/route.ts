@@ -13,16 +13,14 @@ export async function GET() {
 
  try{
 const infoArray: string [] = []
-  quizzes?.forEach(async(quiz:quiz)=>{
-let emailArray:string[] = []
-if(quiz.cohorts){ 
-  quiz.cohorts.learners.map((email)=>{emailArray.push(email.email)})
-}
-else{                 
-  throw new Error("No cohort found for quiz: " + quiz.quiz_name);
-}
- 
- 
+  for (const quiz of quizzes as quiz[]) {
+    let emailArray: string[] = [];
+    if (quiz.cohorts) { 
+      quiz.cohorts.learners.map((email) => { emailArray.push(email.email) });
+    } else {                 
+      throw new Error("No cohort found for quiz: " + quiz.quiz_name);
+    }
+    
     const today = new Date();
     const formattedToday = today.toISOString().split('T')[0]; 
     const closesAtDate = new Date(quiz.closes_at);
@@ -30,19 +28,25 @@ else{
     const formattedClosesAt = closesAtDate.toISOString().split('T')[0]; 
     const formattedOpensAt = opensAtDate.toISOString().split('T')[0]; 
     
-    if (formattedOpensAt === formattedToday){
-  const emailResult = await sendEmail(quiz.quiz_name,emailArray, 'quizOpening');
- infoArray.push(emailResult as string)
+    if (formattedOpensAt === formattedToday) {
+      const emailResult = await sendEmail(quiz.quiz_name, emailArray, 'quizOpening');
+      infoArray.push(emailResult);
+      console.log('info array ', infoArray);
     }
-    if (formattedClosesAt === formattedToday){
-      const emailResult = await sendEmail(quiz.quiz_name,emailArray, 'quizOpening') 
-      infoArray.push(emailResult as string)
+    if (formattedClosesAt === formattedToday) {
+      const emailResult = await sendEmail(quiz.quiz_name, emailArray, 'quizOpening'); 
+      infoArray.push(emailResult);
+      console.log('info array ', infoArray);
     }
-          emailArray = []
-        })
-        
+    emailArray = [];
+  }
+
+
+       
+
+
   return NextResponse.json(
-    { message: `Email Sent Successfully`, infoArray  },
+    { message: `Email Sent Successfully`, infoArray },
     { status: 200 }
   );
 } catch (error) {

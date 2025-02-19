@@ -52,7 +52,7 @@ if (viewMode == 'admin'){
     .select('*,learners(name)')
     .eq('quiz_id', resolvedParams.id);
     
-}// note is it more efficient to always do this then filter down to the use for the userAnswers
+}
 return (
     (viewMode === 'admin' || viewMode === 'quiz reviewer' || viewMode === 'quiz taker') && 
     <QuizInterface 

@@ -1,10 +1,6 @@
 import { FormData } from '@/types/formTypes';
 import { createClient } from '@/utils/supabase/client';
-// type CohortData = {
-//     cohortNumber: string;
-//     startDate: string; 
-//     endDate: string;   
-// }
+
 export default async function addCohort(formdata:FormData){
     
     const supabase = await createClient();

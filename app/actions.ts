@@ -38,7 +38,6 @@ export const signUpAction = async (formData: FormData) => {
 
   if (insertError) {
     console.error('Insertion error:', insertError.message);
-    // Optionally, return an error response or handle it as needed
   } 
 
   if (error) {

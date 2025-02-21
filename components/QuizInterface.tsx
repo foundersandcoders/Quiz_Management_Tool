@@ -106,7 +106,6 @@ router.push('/quizzes');
     return(
       
         <div className="max-w-4xl mx-auto p-4">
-              <EditQuestionModal/>
             <div className="border-b border-gray-200 mb-8">
                 <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2 pb-4">
                     <h1 className="text-2xl font-bold">{quizData.quiz_name}</h1>
@@ -142,9 +141,12 @@ router.push('/quizzes');
             {
 shuffledQuestions.map((question:question, index) => (
                question.id && 
+               
                 <div key={question.id}
                 className="border rounded-lg p-4"
                 >
+                                  <EditQuestionModal questionId={question.id}/>
+
                     <div className="flex gap-4">
                         <div className="flex-1">
                             <div>

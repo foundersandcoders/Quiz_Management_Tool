@@ -145,7 +145,7 @@ shuffledQuestions.map((question:question, index) => (
                 <div key={question.id}
                 className="border rounded-lg p-4"
                 >
-                                  <EditQuestionModal questionId={question.id}/>
+                                  <EditQuestionModal question={question}/>
 
                     <div className="flex gap-4">
                         <div className="flex-1">

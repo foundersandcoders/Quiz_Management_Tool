@@ -20,6 +20,6 @@ await supabase
     question_type: formatedQuestion.questionType,
 })
 .eq('id', questionId);
+window.location.reload()
 
-window.location.reload
 }

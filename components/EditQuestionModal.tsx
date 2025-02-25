@@ -1,11 +1,20 @@
 'use client'
+import { question } from "@/types/supabaseTypes";
 import editQuestion from "@/utils/supabase/editQuestion";
 import React from "react";
 import { useForm } from "react-hook-form";
 
-export default function EditQuestionModal({questionId}:{questionId:number}){
-const{register, handleSubmit} = useForm(); // come back here to add default values
-function handleRegistration(data){editQuestion(data, questionId)}
+export default function EditQuestionModal({question}:{question:question}){
+const{register, handleSubmit} = useForm({defaultValues:{
+  questionText: question.question_text,
+  correctAnswer: question.question_answer,
+  wrongAnswer1: question.question_false_answers?.[0] || '',
+  wrongAnswer2: question.question_false_answers?.[1] || '',
+  wrongAnswer3: question.question_false_answers?.[2] || ''
+
+
+}}); 
+function handleRegistration(data){editQuestion(data, question.id)}
 return(
     <form onSubmit={handleSubmit(handleRegistration)}>
 <div>

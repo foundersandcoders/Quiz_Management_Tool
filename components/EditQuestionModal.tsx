@@ -20,30 +20,34 @@ return(
   <div className="bg-background max-w-md w-full max-h-[80vh] overflow-y-auto p-6 rounded-lg shadow-lg">
   
     <form className="space-y-4 py-4" onSubmit={handleSubmit(handleRegistration)}>
-<div className="space-y-2">
-        <label>Question Text</label>
+<div className="space-y-2 flex  gap-2 items-center">
+        <label className="align-middle">Question Text</label>
         <textarea className="border rounded-lg p-4" {...register('questionText')} />
       </div>
-      <div className="space-y-2">
-        <label>Correct Answer</label>
+      <div className="space-y-2 flex  gap-2 items-center">
+      <label>Correct Answer</label>
         <input type="text" className="border rounded-lg p-4"
   {...register('correctAnswer')} />
       </div>
-      <div className="space-y-2">
-        <label>Wrong answer 1</label>
+      <div className="space-y-2 flex  gap-2 items-center">
+      <label>Wrong answer 1</label>
         <input type="text" className="border rounded-lg p-4"  {...register('wrongAnswer1')} />
       </div>
-      <div className="space-y-2">
-        <label>Wrong answer 2</label>
+      <div className="space-y-2 flex  gap-2 items-center">
+      <label>Wrong answer 2</label>
         <input type="text" className="border rounded-lg p-4" {...register('wrongAnswer2')} />
       </div>
-      <div className="space-y-2">
-        <label>Wrong answer 3</label>
+      <div className="space-y-2 flex  gap-2 items-center">
+      <label>Wrong answer 3</label>
         <input type="text" className="border rounded-lg p-4" {...register('wrongAnswer3')} />
       </div>
+      <div className=" flex  gap-2 ">
       <button className="button">Submit</button>
       <button className="button" onClick={() => setEditQuestionIsOpen(false)}>Cancel</button>
 
+      </div>
+
+     
     </form>
     </div>
 </div>

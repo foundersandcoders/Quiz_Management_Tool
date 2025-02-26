@@ -4,7 +4,7 @@ import editQuestion from "@/utils/supabase/editQuestion";
 import React from "react";
 import { useForm } from "react-hook-form";
 
-export default function EditQuestionModal({question}:{question:question}){
+export default function EditQuestionModal({question, setEditQuestionIsOpen}:{question:question, setEditQuestionIsOpen: (isOpen: boolean) => void}){
 const{register, handleSubmit} = useForm({defaultValues:{
   questionText: question.question_text,
   correctAnswer: question.question_answer,
@@ -16,30 +16,38 @@ const{register, handleSubmit} = useForm({defaultValues:{
 }}); 
 function handleRegistration(data){editQuestion(data, question.id)}
 return(
-    <form onSubmit={handleSubmit(handleRegistration)}>
-<div>
+  <div className="fixed left-0 top-0 z-[1055] h-full w-full overflow-y-auto overflow-x-hidden outline-none flex justify-center items-center bg-black bg-opacity-50">
+  <div className="bg-background max-w-md w-full max-h-[80vh] overflow-y-auto p-6 rounded-lg shadow-lg">
+  
+    <form className="space-y-4 py-4" onSubmit={handleSubmit(handleRegistration)}>
+<div className="space-y-2">
         <label>Question Text</label>
-        <textarea {...register('questionText')} />
+        <textarea className="border rounded-lg p-4" {...register('questionText')} />
       </div>
-      <div>
+      <div className="space-y-2">
         <label>Correct Answer</label>
-        <input type="text"  {...register('correctAnswer')} />
+        <input type="text" className="border rounded-lg p-4"
+  {...register('correctAnswer')} />
       </div>
-      <div>
+      <div className="space-y-2">
         <label>Wrong answer 1</label>
-        <input type="text"  {...register('wrongAnswer1')} />
+        <input type="text" className="border rounded-lg p-4"  {...register('wrongAnswer1')} />
       </div>
-      <div>
+      <div className="space-y-2">
         <label>Wrong answer 2</label>
-        <input type="text"  {...register('wrongAnswer2')} />
+        <input type="text" className="border rounded-lg p-4" {...register('wrongAnswer2')} />
       </div>
-      <div>
+      <div className="space-y-2">
         <label>Wrong answer 3</label>
-        <input type="text"  {...register('wrongAnswer3')} />
+        <input type="text" className="border rounded-lg p-4" {...register('wrongAnswer3')} />
       </div>
-      <button>Submit</button>
+      <button className="button">Submit</button>
+      <button className="button" onClick={() => setEditQuestionIsOpen(false)}>Cancel</button>
 
     </form>
+    </div>
+</div>
+
 
 )
 

@@ -12,6 +12,7 @@ import addQuizRecourse from '@/utils/supabase/addQuizRecourse';
 import addProblemReport from '@/utils/supabase/addProblemReport';
 import StudentAnswersDropdown from './StudentAnswersDropdown';
 import ResourcesDropdown from './ResourcesDropdown';
+import EditQuestionModal from './EditQuestionModal';
 
 
 
@@ -25,6 +26,7 @@ export default function QuizInterface({ quizData, answerData, viewMode, allStude
     const [addQuizRecourseIsOpen, setAddQuizRecourseIsOpen] = useState(false)
     const [quizResources, setQuizResources] = useState<quiz_recourse[]>(); 
     const [addProblemReportIsOpen, setAddProblemReportIsOpen] = useState(false)
+    const [editQuestionIsOpen, setEditQuestionIsOpen] = useState(false)
 
     const router = useRouter();
     useEffect(() => {
@@ -82,6 +84,9 @@ const scores = learnerIds.map(learnerId => {
     function addQuestionHandler(){
         setAddQuestionIsOpen(true)
     }
+    function editQuestionHandler(){
+        setEditQuestionIsOpen(true)
+    }
     function addRecourseHandler(){
         setAddQuizRecourseIsOpen(true)
     }
@@ -103,6 +108,7 @@ router.push('/quizzes');
     };
 
     return(
+      
         <div className="max-w-4xl mx-auto p-4">
             <div className="border-b border-gray-200 mb-8">
                 <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2 pb-4">
@@ -135,16 +141,25 @@ router.push('/quizzes');
                 )}
             </div>
 
-            {/* Existing questions section */}
             {
 shuffledQuestions.map((question:question, index) => (
                question.id && 
+               
                 <div key={question.id}
                 className="border rounded-lg p-4"
                 >
+                 
                     <div className="flex gap-4">
                         <div className="flex-1">
-                            <div>
+                            <div> 
+                                 {viewMode === 'admin' && <button
+                    onClick={()=> editQuestionHandler()}
+                    className='button'
+                    >
+                        Edit Question
+                    </button>}
+                                  {editQuestionIsOpen && <EditQuestionModal question={question} setEditQuestionIsOpen ={setEditQuestionIsOpen}/>}
+
                                 <button 
                                     onClick={()=>reportProblemHandler()}
                                     className="button button-red"
@@ -216,7 +231,6 @@ shuffledQuestions.map((question:question, index) => (
                 </button>
             )}
             {addQuestionIsOpen && <AddModal dataFunction={addQuestion}  setIsOpen={setAddQuestionIsOpen} relevantId={quizData.id} />}
-            {/* add logic so this only appears if quiz has not gone live yet */}
            {viewMode == 'quiz taker' && <button 
            onClick={()=> submitHandler(questionAnswers,quizData.id)}
            className="button"

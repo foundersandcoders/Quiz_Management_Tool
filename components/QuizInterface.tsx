@@ -158,7 +158,7 @@ shuffledQuestions.map((question:question, index) => (
                     >
                         Edit Question
                     </button>}
-                                  {editQuestionIsOpen && <EditQuestionModal question={question} setAddProblemReportIsOpen ={setAddProblemReportIsOpen}/>}
+                                  {editQuestionIsOpen && <EditQuestionModal question={question} setEditQuestionIsOpen ={setEditQuestionIsOpen}/>}
 
                                 <button 
                                     onClick={()=>reportProblemHandler()}

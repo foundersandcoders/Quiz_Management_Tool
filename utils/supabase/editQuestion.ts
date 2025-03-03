@@ -3,7 +3,6 @@ import { question } from '@/types/supabaseTypes';
 import { createClient } from '@/utils/supabase/client';
 
 export default async function editQuestion(editedQuestion:FormData, questionId:number){
-console.log(editedQuestion)
 const formatedQuestion:question = { 
     question_text: editedQuestion.questionText, 
     question_answer: editedQuestion.correctAnswer || '',

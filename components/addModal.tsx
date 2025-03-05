@@ -66,11 +66,11 @@ return (
         </div>
 
        
-
-<button type='submit'>Submit</button>
-
+<div className="flex gap-1">
+<button type='submit' className="button">Submit</button>
+<button type='button' className='button' onClick={() => setIsOpen(false)}>Cancel</button>
+</div>
 </form>
-<button type='button' onClick={() => setIsOpen(false)}>Cancel</button>
 
   </div>
 </div>

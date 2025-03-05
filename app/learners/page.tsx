@@ -35,6 +35,7 @@ export default async function Cohorts() {
 
       <ButtonWithModalForCohorts
       buttonText='Add Cohort'
+      relevantId={555}
       />
     </div>
   );
